@@ -1,0 +1,2 @@
+# GOGGiveawayNotifier
+GOG Giveaway Notifier
