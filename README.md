@@ -20,8 +20,8 @@ Same as below repos, fetch GOG home page and send notifications to telegram when
 Publish as a trimmed single .exe file.
 
 ```
-git clone https://github.com/azhuge233/EpicBundle-FreeGames-dotnet.git
-cd EpicBundle-FreeGames-dotnet
+git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
+cd GOGGiveawayNotifier
 dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishTrimmed=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 ```
 
