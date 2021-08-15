@@ -2,12 +2,15 @@
 using System.Globalization;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
+using GOGGiveawayNotifier.Model;
 
-namespace GOGGiveawayNotifier {
+namespace GOGGiveawayNotifier.Module {
 	class Parser : IDisposable {
 		private readonly ILogger<Parser> _logger;
+
+		#region debug strings
 		private readonly string debugParse = "Parsing";
-		private readonly string titleLableXpath = ".//a[@giveaway-banner]";
+		#endregion
 
 		public Parser(ILogger<Parser> logger) {
 			_logger = logger;
@@ -17,7 +20,7 @@ namespace GOGGiveawayNotifier {
 			try {
 				_logger.LogDebug(debugParse);
 
-				var titleHref = htmlDoc.DocumentNode.SelectSingleNode(titleLableXpath);
+				var titleHref = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.titleLableXpath);
 
 				if (titleHref == null) {
 					_logger.LogDebug($"Done: {debugParse}");

@@ -1,0 +1,16 @@
+{
+  "EnableTelegram": true,
+  "EnableBark": false,
+  "EnableEmail": false,
+
+  "TelegramToken": "",
+  "TelegramChatID": "",
+  "BarkAddress": "https://api.day.app",
+  "BarkToken": "",
+  "SMTPServer": "",
+  "SMTPPort": 465,
+  "FromEmailAddress": "",
+  "ToEmailAddress": "",
+  "AuthAccount": "",
+  "AuthPassword": ""
+}

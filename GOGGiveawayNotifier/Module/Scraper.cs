@@ -2,11 +2,14 @@
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 
-namespace GOGGiveawayNotifier {
+namespace GOGGiveawayNotifier.Module {
 	class Scraper: IDisposable {
 		private readonly ILogger<Scraper> _logger;
 		private readonly string url = "https://www.gog.com/";
+
+		#region debug strings
 		private readonly string debugGetSource = "Getting page source";
+		#endregion
 
 		public Scraper(ILogger<Scraper> logger) {
 			_logger = logger;

@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Logging;
+using GOGGiveawayNotifier.Model;
 
-namespace GOGGiveawayNotifier {
-	class TgBot : IDisposable {
+namespace GOGGiveawayNotifier.Notifier {
+	class TgBot : INotifiable {
 		private readonly ILogger<TgBot> _logger;
+
+		#region debug strings
 		private readonly string debugSendMessage = "Sending Message";
-		private readonly string giveawayNotification = "<b>GOG Giveaway</b>\n\n<i>{0}</i>\n领取链接: https://www.gog.com/#giveaway";
-		private TelegramBotClient BotClient { get; set; }
+		#endregion
 
 		public TgBot(ILogger<TgBot> logger) {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(string token, string chatID, string gameName, bool htmlMode = false) {
-			BotClient = new TelegramBotClient(token: token);
+		public async Task SendMessage(NotifyConfig config, string gameName) {
+			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 			try {
 				_logger.LogDebug(debugSendMessage);
 				await BotClient.SendTextMessageAsync(
-						chatId: chatID,
-						text: string.Format(giveawayNotification, gameName),
-						parseMode: htmlMode ? ParseMode.Html : ParseMode.Default
+						chatId: config.TelegramChatID,
+						text: string.Format(NotifyFormatStrings.telegramFormat, gameName),
+						parseMode: ParseMode.Html
 					);
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
