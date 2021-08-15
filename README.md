@@ -1,6 +1,22 @@
 # GOGGiveawayNotifier
 
-Same as below repos, fetch GOG home page and send notifications to telegram when there's any giveaways.
+Same as below repos, fetch GOG home page and send notifications through Telegram, Bark and Email.
+
+Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
+
+## Build
+
+Follow commands will publish project as a trimmed single .exe file.
+
+```
+git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
+cd GOGGiveawayNotifier
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...]
+```
+
+## Usage
+
+Fill your telegram bot token and chat ID in config.json first.
 
 ## My Free Games Collection
 
@@ -14,20 +30,3 @@ Same as below repos, fetch GOG home page and send notifications to telegram when
     - [https://github.com/azhuge233/IndiegalaFreebieNotifier](https://github.com/azhuge233/IndiegalaFreebieNotifier)
 - GOG
     - [https://github.com/azhuge233/GOGGiveawayNotifier](https://github.com/azhuge233/GOGGiveawayNotifier)
-
-Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
-
-## Build
-
-Publish as a trimmed single .exe file.
-
-```
-git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
-cd GOGGiveawayNotifier
-dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64] -p:PublishTrimmed=true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
-```
-
-## Usage
-
-Fill your telegram bot token and chat ID in config.json first.
-
