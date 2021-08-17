@@ -6,7 +6,7 @@ Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
 ## Build
 
-Follow commands will publish project as a trimmed single .exe file.
+Follow commands will publish project as a trimmed executable file.
 
 ```
 git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
