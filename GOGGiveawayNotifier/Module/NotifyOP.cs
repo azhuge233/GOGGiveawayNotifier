@@ -14,6 +14,7 @@ namespace GOGGiveawayNotifier.Module {
 
 		#region debug strings
 		private readonly string debugNotify = "Notify";
+		private readonly string debugEnabledFormat = "Sending notifications to {0}";
 		private readonly string debugDisabledFormat = "{0} notify is disabled, skipping";
 		#endregion
 
@@ -21,8 +22,8 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public async Task Notify(NotifyConfig config, string gameName) {
-			if (gameName == string.Empty) {
+		public async Task Notify(NotifyConfig config, GiveawayRecord game) {
+			if (game == null || string.IsNullOrEmpty(game.Name)) {
 				_logger.LogInformation("There's no giveaway currently.");
 				return;
 			}
@@ -31,19 +32,28 @@ namespace GOGGiveawayNotifier.Module {
 				_logger.LogDebug(debugNotify);
 
 				// Telegram notifications
-				if (config.EnableTelegram)
-					await services.GetRequiredService<TgBot>().SendMessage(config, gameName);
-				else _logger.LogInformation(debugDisabledFormat, "Telegram");
+				if (config.EnableTelegram) {
+					_logger.LogInformation(debugEnabledFormat, "Telegram");
+					await services.GetRequiredService<TgBot>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "Telegram");
 
 				// Bark notifications
-				if (config.EnableBark)
-					await services.GetRequiredService<Barker>().SendMessage(config, gameName);
-				else _logger.LogInformation(debugDisabledFormat, "Bark");
+				if (config.EnableBark) {
+					_logger.LogInformation(debugEnabledFormat, "Bark");
+					await services.GetRequiredService<Barker>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "Bark");
+
+				//QQ notifications
+				if (config.EnableQQ) {
+					_logger.LogInformation(debugEnabledFormat, "QQ");
+					await services.GetRequiredService<QQPusher>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "QQ");
 
 				//Email notifications
-				if (config.EnableEmail)
-					await services.GetRequiredService<Email>().SendMessage(config, gameName);
-				else _logger.LogInformation(debugDisabledFormat, "Email");
+				if (config.EnableEmail) {
+					_logger.LogInformation(debugEnabledFormat, "Email");
+					await services.GetRequiredService<Email>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "Email");
 
 				_logger.LogDebug($"Done: {debugNotify}");
 			} catch (Exception) {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
@@ -46,11 +45,11 @@ namespace GOGGiveawayNotifier.Notifier {
 			}
 		}
 
-		public async Task SendMessage(NotifyConfig config, string gameName) {
+		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var message = CreateMessage(gameName, config.FromEmailAddress, config.ToEmailAddress);
+				var message = CreateMessage(game.Name, config.FromEmailAddress, config.ToEmailAddress);
 
 				using var client = new SmtpClient();
 				client.Connect(config.SMTPServer, config.SMTPPort, true);

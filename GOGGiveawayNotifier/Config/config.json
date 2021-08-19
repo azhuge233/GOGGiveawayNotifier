@@ -2,11 +2,18 @@
   "EnableTelegram": true,
   "EnableBark": false,
   "EnableEmail": false,
+  "EnableQQ": false,
 
   "TelegramToken": "",
   "TelegramChatID": "",
+
   "BarkAddress": "https://api.day.app",
   "BarkToken": "",
+
+  "QQAddress": "127.0.0.1",
+  "QQPort": 5700,
+  "ToQQID": "",
+
   "SMTPServer": "",
   "SMTPPort": 465,
   "FromEmailAddress": "",

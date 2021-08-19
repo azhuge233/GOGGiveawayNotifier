@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
-using NLog.Extensions.Logging;
 using GOGGiveawayNotifier.Module;
 
 namespace GOGGiveawayNotifier {
@@ -19,16 +16,19 @@ namespace GOGGiveawayNotifier {
 				var services = DI.BuildDiAll();
 
 				using (services as IDisposable) {
-					var config = services.GetRequiredService<JsonOP>().LoadConfig();
+					var jsonOp = services.GetRequiredService<JsonOP>();
+					var config = jsonOp.LoadConfig();
 					services.GetRequiredService<ConfigValidator>().CheckValid(config);
 
 					var htmlDoc = services.GetRequiredService<Scraper>().GetHtmlSource();
 					//var htmlDoc = new HtmlAgilityPack.HtmlDocument();
 					//htmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
 
-					var gameName = services.GetRequiredService<Parser>().Parse(htmlDoc);
+					var newGiveaway = services.GetRequiredService<Parser>().Parse(htmlDoc, jsonOp.LoadData());
 
-					await services.GetRequiredService<NotifyOP>().Notify(config, gameName);
+					await services.GetRequiredService<NotifyOP>().Notify(config, newGiveaway);
+
+					jsonOp.WriteData(newGiveaway);
 				}
 
 				logger.Info("- End Job -\n\n");

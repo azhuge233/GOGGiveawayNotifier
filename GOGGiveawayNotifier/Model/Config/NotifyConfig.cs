@@ -16,5 +16,10 @@
 		public string ToEmailAddress { get; set; }
 		public string AuthAccount { get; set; }
 		public string AuthPassword { get; set; }
+
+		public bool EnableQQ { get; set; }
+		public string QQAddress { get; set; }
+		public string QQPort { get; set; }
+		public string ToQQID { get; set; }
 	}
 }

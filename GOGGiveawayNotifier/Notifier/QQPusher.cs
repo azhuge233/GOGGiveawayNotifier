@@ -7,35 +7,35 @@ using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class Barker : INotifiable {
-		private readonly ILogger<Barker> _logger;
+	class QQPusher: INotifiable {
+		private readonly ILogger<QQPusher> _logger;
 
 		#region debug strings
-		private readonly string debugSendMessage = "Send notification to Bark";
+		private readonly string debugSendMessage = "Send notifications to QQ";
 		#endregion
 
-		public Barker(ILogger<Barker> logger) {
+		public QQPusher(ILogger<QQPusher> logger) {
 			_logger = logger;
 		}
 
 		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
 			try {
-				var sb = new StringBuilder();
-				string url = sb.AppendFormat(NotifyFormatStrings.barkUrlWithTitleFormat, config.BarkAddress, config.BarkToken).ToString();
+				_logger.LogDebug(debugSendMessage);
+
+				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.qqUrlFormat, config.QQAddress, config.QQPort, config.ToQQID).ToString();
 				var webGet = new HtmlWeb();
 
-				sb.Clear();
 				_logger.LogDebug($"{debugSendMessage} : {game.Name}");
 				await webGet.LoadFromWebAsync(
-					sb.Append(url)
-					.Append(HttpUtility.UrlEncode(game.Name))
-					.Append(NotifyFormatStrings.barkUrlArgs)
-					.ToString()
+					new StringBuilder()
+						.Append(url)
+						.Append(HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name).ToString()))
+						.ToString()
 				);
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
-				_logger.LogDebug($"Error: {debugSendMessage}");
+				_logger.LogError($"Error: {debugSendMessage}");
 				throw;
 			} finally {
 				Dispose();

@@ -17,13 +17,13 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, string gameName) {
+		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
 			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 			try {
 				_logger.LogDebug(debugSendMessage);
 				await BotClient.SendTextMessageAsync(
 						chatId: config.TelegramChatID,
-						text: string.Format(NotifyFormatStrings.telegramFormat, gameName),
+						text: string.Format(NotifyFormatStrings.telegramFormat, game.Name),
 						parseMode: ParseMode.Html
 					);
 				_logger.LogDebug($"Done: {debugSendMessage}");

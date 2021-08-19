@@ -32,5 +32,6 @@
 
   <ItemGroup>
     <None Update="Config\config.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Record\record.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

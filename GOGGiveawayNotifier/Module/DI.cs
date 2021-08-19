@@ -22,6 +22,7 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<Barker>()
                .AddTransient<TgBot>()
                .AddTransient<Email>()
+               .AddTransient<QQPusher>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -36,6 +37,7 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<Barker>()
                .AddTransient<TgBot>()
                .AddTransient<Email>()
+               .AddTransient<QQPusher>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

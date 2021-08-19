@@ -16,24 +16,33 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public string Parse(HtmlDocument htmlDoc) {
+		public GiveawayRecord Parse(HtmlDocument htmlDoc, GiveawayRecord oldRecord) {
 			try {
 				_logger.LogDebug(debugParse);
+				//_logger.LogInformation(oldRecord.Name);
 
 				var titleHref = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.titleLableXpath);
 
 				if (titleHref == null) {
 					_logger.LogDebug($"Done: {debugParse}");
-					return string.Empty;
+					return null;
 				}
 
-				var gameName = titleHref.Attributes["ng-href"].Value.Split("/game/")[^1].Replace("_", " ");
+				var newGiveaway = new GiveawayRecord {
+					Name = titleHref.Attributes["ng-href"].Value.Split("/game/")[^1].Replace("_", " ")
+				};
 				var textInfo = new CultureInfo("en-US", false).TextInfo;
-				gameName = textInfo.ToTitleCase(gameName);
+				newGiveaway.Name = textInfo.ToTitleCase(newGiveaway.Name);
 
-				_logger.LogInformation($"Found Giveaway {gameName}");
+				if (newGiveaway.Name == oldRecord.Name) {
+					_logger.LogDebug($"{newGiveaway.Name} is found in previous record");
+					_logger.LogDebug($"Done: {debugParse}");
+					return null;
+				}
+
+				_logger.LogInformation($"Found Giveaway {newGiveaway.Name}");
 				_logger.LogDebug($"Done: {debugParse}");
-				return gameName;
+				return newGiveaway;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugParse}");
 				throw;

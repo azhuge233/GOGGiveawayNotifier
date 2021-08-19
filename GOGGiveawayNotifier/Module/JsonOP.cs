@@ -10,10 +10,40 @@ namespace GOGGiveawayNotifier.Module {
 
 		#region path strings
 		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}Config{Path.DirectorySeparatorChar}config.json";
+		private readonly string recordPath = $"{AppDomain.CurrentDomain.BaseDirectory}Record{Path.DirectorySeparatorChar}record.json";
 		#endregion
 
 		public JsonOP(ILogger<JsonOP> logger) {
 			_logger = logger;
+		}
+
+		public void WriteData(GiveawayRecord data) {
+			try {
+				if (data != null && !string.IsNullOrEmpty(data.Name)) {
+					_logger.LogDebug("Writing records!");
+					string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+					File.WriteAllText(recordPath, string.Empty);
+					File.WriteAllText(recordPath, json);
+					_logger.LogDebug("Done");
+				} else _logger.LogDebug("No records detected, quit writing records");
+			} catch (Exception) {
+				_logger.LogError("Writing data failed.");
+				throw;
+			} finally {
+				Dispose();
+			}
+		}
+
+		public GiveawayRecord LoadData() {
+			try {
+				_logger.LogDebug("Loading previous records");
+				var content = JsonConvert.DeserializeObject<GiveawayRecord>(File.ReadAllText(recordPath));
+				_logger.LogDebug("Done");
+				return content;
+			} catch (Exception) {
+				_logger.LogError("Loading previous records failed.");
+				throw;
+			}
 		}
 
 		public Config LoadConfig() {
@@ -25,8 +55,6 @@ namespace GOGGiveawayNotifier.Module {
 			} catch (Exception) {
 				_logger.LogError("Loading config failed.");
 				throw;
-			} finally {
-				Dispose();
 			}
 		}
 
