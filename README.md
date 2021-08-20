@@ -1,6 +1,6 @@
 # GOGGiveawayNotifier
 
-Same as below repos, fetch GOG home page and send notifications through Telegram, Bark and Email.
+Same as below repos, fetch GOG home page and send notifications through Telegram, Bark, Email, QQ and PushPlus.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
