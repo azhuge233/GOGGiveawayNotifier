@@ -14,11 +14,15 @@
 			$"&copy={gogGiveawayUrl}";
 
 		public static readonly string emailTitleFormat = "New GOG Giveaway - GOGGiveawayNotifier";
-		public static readonly string emailBodyFormat = "<br>{0}<br>" + $"领取链接: {gogGiveawayUrl}";
+		public static readonly string emailBodyFormat = "<br>{0}<br>" + $"领取链接: <a href=\"{gogGiveawayUrl}\">{gogGiveawayUrl}</a>";
 
 		public static readonly string qqUrlFormat = "http://{0}:{1}/send_private_msg?user_id={2}&message=";
 		public static readonly string qqMessageFormat = "GOG Giveaway\n\n" +
 			"{0}\n" +
 			$"领取链接: {gogGiveawayUrl}";
+
+		public static readonly string pushPlusTitleFormat = "New GOG Giveaway - GOGGiveawayNotifier";
+		public static readonly string pushPlusBodyFormat = "<br>{0}<br>" + $"领取链接: <a href=\"{gogGiveawayUrl}\">{gogGiveawayUrl}</a>";
+		public static readonly string pushPlusUrlFormat = "http://www.pushplus.plus/send?token={0}&template=html&title={1}&content=";
 	}
 }
