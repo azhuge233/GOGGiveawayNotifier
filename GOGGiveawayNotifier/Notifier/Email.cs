@@ -34,7 +34,9 @@ namespace GOGGiveawayNotifier.Notifier {
 				
 				sb.Clear();
 				message.Body = new TextPart("html") {
-					Text = sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, gameName).ToString()
+					Text = sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, gameName)
+						.Append(NotifyFormatStrings.projectLinkHTML)
+						.ToString()
 				};
 
 				_logger.LogDebug($"Done: {debugCreateMessage}");

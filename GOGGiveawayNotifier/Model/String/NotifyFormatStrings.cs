@@ -24,5 +24,13 @@
 		public static readonly string pushPlusTitleFormat = "New GOG Giveaway - GOGGiveawayNotifier";
 		public static readonly string pushPlusBodyFormat = "<br>{0}<br>" + $"领取链接: <a href=\"{gogGiveawayUrl}\">{gogGiveawayUrl}</a>";
 		public static readonly string pushPlusUrlFormat = "http://www.pushplus.plus/send?token={0}&template=html&title={1}&content=";
+
+		public static readonly string dingTalkUrlFormat = "https://oapi.dingtalk.com/robot/send?access_token={0}";
+		public static readonly string dingTalkMessageFormat = "GOG Giveaway\n\n" +
+			"{0}\n" +
+			$"领取链接: {gogGiveawayUrl}";
+
+		public static readonly string projectLink = "\n\nFrom https://github.com/azhuge233/GOGGiveawayNotifier";
+		public static readonly string projectLinkHTML = "<br><br>From <a href=\"https://github.com/azhuge233/GOGGiveawayNotifier\">GOGGiveawayNotifier</a>";
 	}
 }

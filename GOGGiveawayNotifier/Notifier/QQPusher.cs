@@ -30,6 +30,7 @@ namespace GOGGiveawayNotifier.Notifier {
 					new StringBuilder()
 						.Append(url)
 						.Append(HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name).ToString()))
+						.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 						.ToString()
 				);
 

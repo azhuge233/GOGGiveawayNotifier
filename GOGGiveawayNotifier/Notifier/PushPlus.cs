@@ -29,6 +29,7 @@ namespace GOGGiveawayNotifier.Notifier {
 					new StringBuilder()
 						.Append(url)
 						.Append(message)
+						.Append(NotifyFormatStrings.projectLinkHTML)
 						.ToString()
 				);
 				_logger.LogDebug(resp.Text);

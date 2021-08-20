@@ -29,6 +29,7 @@ namespace GOGGiveawayNotifier.Notifier {
 				await webGet.LoadFromWebAsync(
 					sb.Append(url)
 					.Append(HttpUtility.UrlEncode(game.Name))
+					.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
 					.Append(NotifyFormatStrings.barkUrlArgs)
 					.ToString()
 				);
