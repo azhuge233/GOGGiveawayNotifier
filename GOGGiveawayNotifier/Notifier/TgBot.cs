@@ -23,7 +23,7 @@ namespace GOGGiveawayNotifier.Notifier {
 				_logger.LogDebug(debugSendMessage);
 				await BotClient.SendTextMessageAsync(
 						chatId: config.TelegramChatID,
-						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name)}{NotifyFormatStrings.projectLink}",
+						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name)}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
 						parseMode: ParseMode.Html
 					);
 				_logger.LogDebug($"Done: {debugSendMessage}");
