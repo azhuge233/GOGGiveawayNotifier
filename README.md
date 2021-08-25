@@ -1,6 +1,6 @@
 # GOGGiveawayNotifier
 
-Same as below repos, fetch GOG home page and send notifications through Telegram, Bark, Email, QQ and PushPlus.
+Same as below repos, fetch GOG home page and send notifications through Telegram, Bark, Email, QQ, PushPlus and DingTalk.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
@@ -20,7 +20,9 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...
 
 Fill your telegram bot token and chat ID in config.json first.
 
-Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more explanations, only Telegram, Bark and Email varaibles are available for this project.
+Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more explanations, only notify varaibles are available for this project.
+
+To schedule the program, use cron.d in Linux(macOS) or Task Scheduler in Windows.
 
 ## My Free Games Collection
 
