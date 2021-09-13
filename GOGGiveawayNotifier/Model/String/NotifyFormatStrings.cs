@@ -4,7 +4,8 @@
 
 		public static readonly string telegramFormat = "<b>GOG Giveaway</b>\n\n" +
 			"<i>{0}</i>\n" + 
-			$"领取链接: {gogGiveawayUrl}";
+			$"领取链接: {gogGiveawayUrl}\n\n" +
+			"#GOG";
 
 		public static readonly string barkUrlWithTitleFormat = "{0}/{1}/GOGGiveawayNotifier/";
 		public static readonly string barkUrlArgs = "?group=goggiveawaynotifier" +
