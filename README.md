@@ -13,7 +13,7 @@ Follow commands will publish project as a trimmed executable file.
 ```
 git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
 cd GOGGiveawayNotifier
-dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...]
+dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...] --sc
 ```
 
 ## Usage
