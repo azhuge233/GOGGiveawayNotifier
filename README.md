@@ -18,7 +18,7 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...
 
 ## Usage
 
-Fill your telegram bot token and chat ID in config.json first.
+Set your telegram bot token and chat ID in config.json first.
 
 Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more explanations, only notify varaibles are available for this project.
 
