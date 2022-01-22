@@ -7,7 +7,7 @@ using HtmlAgilityPack;
 using GOGGiveawayNotifier.Model;
 
 namespace GOGGiveawayNotifier.Notifier {
-	internal class PushDeer: IDisposable {
+	internal class PushDeer: INotifiable {
 		private readonly ILogger<PushDeer> _logger;
 
 		#region debug strings
