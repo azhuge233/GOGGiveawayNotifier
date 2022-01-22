@@ -1,6 +1,6 @@
 # GOGGiveawayNotifier
 
-Same as below repos, a CLI tool fetches GOG home page and sends notifications through Telegram, Bark, Email, QQ, PushPlus and DingTalk.
+Same as below repos, a CLI tool fetches GOG home page and sends notifications through Telegram, Bark, Email, QQ, PushPlus, DingTalk and PushDeer.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
