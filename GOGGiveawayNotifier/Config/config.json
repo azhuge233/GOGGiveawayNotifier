@@ -5,6 +5,7 @@
   "EnableQQ": false,
   "EnablePushPlus": false,
   "EnableDingTalk": false,
+  "EnablePushDeer": false,
 
   "TelegramToken": "",
   "TelegramChatID": "",
@@ -19,6 +20,8 @@
   "PushPlusToken": "",
 
   "DingTalkBotToken": "",
+
+  "PushDeerToken": "",
 
   "SMTPServer": "",
   "SMTPPort": 465,

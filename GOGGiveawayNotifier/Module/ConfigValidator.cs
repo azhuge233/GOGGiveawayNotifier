@@ -70,6 +70,12 @@ namespace GOGGiveawayNotifier.Module {
 						throw new Exception(message: "No DingTalk token provided!");
 				}
 
+				//PushDeer
+				if (config.EnablePushDeer) {
+					if (string.IsNullOrEmpty(config.PushDeerToken))
+						throw new Exception(message: "No PushDeer token provided!");
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");

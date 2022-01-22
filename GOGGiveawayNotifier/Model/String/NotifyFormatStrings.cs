@@ -31,6 +31,11 @@
 			"{0}\n" +
 			$"领取链接: {gogGiveawayUrl}";
 
+		public static readonly string pushDeerUrlFormat = "https://api2.pushdeer.com/message/push?pushkey={0}&&text={1}";
+		public static readonly string pushDeerFormat = "GOG Giveaway\n\n" +
+			"{0}\n" +
+			$"领取链接: {gogGiveawayUrl}";
+
 		public static readonly string projectLink = "\n\nFrom https://github.com/azhuge233/GOGGiveawayNotifier";
 		public static readonly string projectLinkHTML = "<br><br>From <a href=\"https://github.com/azhuge233/GOGGiveawayNotifier\">GOGGiveawayNotifier</a>";
 	}

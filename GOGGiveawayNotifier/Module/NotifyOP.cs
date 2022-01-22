@@ -61,6 +61,12 @@ namespace GOGGiveawayNotifier.Module {
 					await services.GetRequiredService<DingTalk>().SendMessage(config, game);
 				} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
 
+				// PushDeer notifications
+				if (config.EnablePushDeer) {
+					_logger.LogInformation(debugEnabledFormat, "PushDeer");
+					await services.GetRequiredService<PushDeer>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
+
 				//Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");
