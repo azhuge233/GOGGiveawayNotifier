@@ -30,7 +30,7 @@ jobs:
       
     - name: Create Zip
       run: |
-        zip -qq -r win-x64.zip win-x64/*
+        zip -qq -r GOG-win-x64.zip win-x64/*
       working-directory: bin/release
       
     - name: Upload zip
