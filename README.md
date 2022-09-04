@@ -1,6 +1,8 @@
 # GOGGiveawayNotifier
 
-Same as below repos, a CLI tool fetches GOG home page and sends notifications through Telegram, Bark, Email, QQ, PushPlus, DingTalk and PushDeer.
+A CLI tool
+- Fetches GOG giveaway news and sends notifications to Telegram, Bark, Email, QQ, PushPlus, DingTalk and PushDeer.
+- Auto claim GOG giveaway by carrying given cookies and sending GET request to [https://www.gog.com/giveaway/claim](https://www.gog.com/giveaway/claim)
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
@@ -20,7 +22,7 @@ dotnet publish -c Release -o /your/path/here -r [win10-x64/osx-x64/linux-x64/...
 
 Set your telegram bot token and chat ID in config.json first.
 
-Check [wiki](https://github.com/azhuge233/SteamDB-FreeGames-dotnet/wiki/Config-Description) for more explanations, only notify varaibles are available for this project.
+Check [wiki](https://github.com/azhuge233/GOGGiveawayNotifier/wiki/Config-Description) for more explanations.
 
 ### Repeatedly running
 
