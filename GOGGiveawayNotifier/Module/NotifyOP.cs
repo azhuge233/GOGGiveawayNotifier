@@ -24,7 +24,7 @@ namespace GOGGiveawayNotifier.Module {
 
 		public async Task Notify(NotifyConfig config, GiveawayRecord game) {
 			if (game == null || string.IsNullOrEmpty(game.Name)) {
-				_logger.LogInformation("There's no giveaway currently.");
+				_logger.LogInformation("There's no (new) giveaway currently.");
 				return;
 			}
 

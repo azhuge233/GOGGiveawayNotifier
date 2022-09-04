@@ -12,7 +12,7 @@ namespace GOGGiveawayNotifier.Module {
 
 		#region debug strings
 		private readonly string debugAutoClaim = "Auto claim giveaway";
-		private readonly string infoACDiabled = "AutoClaim disabled, skipping";
+		private readonly string infoACDiabled = "Auto claim disabled, skipping";
 		private readonly string infoNoCookie = "No cookie configured, skipping";
 		private readonly string infoNoNewGiveaway = "No (new) giveaway detected, autoclaim abort";
 		#endregion
@@ -22,11 +22,6 @@ namespace GOGGiveawayNotifier.Module {
 		}
 
 		public async Task<string> Claim(Config config, GiveawayRecord game) {
-			if (game == null || string.IsNullOrEmpty(game.Name)) {
-				_logger.LogInformation(infoNoNewGiveaway);
-				return string.Empty;
-			}
-
 			if (!config.EnableAutoClaim) {
 				_logger.LogInformation(infoACDiabled);
 				return string.Empty;
@@ -34,6 +29,11 @@ namespace GOGGiveawayNotifier.Module {
 
 			if (string.IsNullOrWhiteSpace(config.Cookie) || string.IsNullOrEmpty(config.Cookie)) {
 				_logger.LogInformation(infoNoCookie);
+				return string.Empty;
+			}
+
+			if (game == null || string.IsNullOrEmpty(game.Name)) {
+				_logger.LogInformation(infoNoNewGiveaway);
 				return string.Empty;
 			}
 
