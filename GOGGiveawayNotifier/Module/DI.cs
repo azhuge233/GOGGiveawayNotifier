@@ -26,6 +26,7 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<PushPlus>()
                .AddTransient<DingTalk>()
                .AddTransient<PushDeer>()
+               .AddTransient<AutoClaimer>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

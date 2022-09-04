@@ -28,6 +28,8 @@ namespace GOGGiveawayNotifier {
 					await services.GetRequiredService<NotifyOP>().Notify(config, newGiveaway);
 
 					jsonOp.WriteData(newGiveaway);
+
+					var claimResult = await services.GetRequiredService<AutoClaimer>().Claim(config, newGiveaway);
 				}
 
 				logger.Info("- End Job -\n\n");

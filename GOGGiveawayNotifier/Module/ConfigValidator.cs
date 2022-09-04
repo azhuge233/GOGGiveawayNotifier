@@ -76,6 +76,13 @@ namespace GOGGiveawayNotifier.Module {
 						throw new Exception(message: "No PushDeer token provided!");
 				}
 
+				//Autoclaim
+				if (config.EnableAutoClaim) {
+					if (string.IsNullOrEmpty(config.Cookie)) {
+						throw new Exception(message: "No cookie provided!");
+					}
+				}
+
 				_logger.LogDebug($"Done: {debugCheckValid}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugCheckValid}");
