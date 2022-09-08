@@ -15,7 +15,7 @@ namespace GOGGiveawayNotifier.Model.PostContent {
 		[JsonProperty("description")]
 		public string Description { get; set; }
 		[JsonProperty("color")]
-		public int Color { get; set; } = 16711856;
+		public int Color { get; set; } = 7478904;
 		[JsonProperty("footer")]
 		public Footer Footer { get; set; }
 	}
