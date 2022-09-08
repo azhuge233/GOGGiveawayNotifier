@@ -26,7 +26,8 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<PushPlus>()
                .AddTransient<DingTalk>()
                .AddTransient<PushDeer>()
-               .AddTransient<AutoClaimer>()
+			   .AddTransient<Discord>()
+			   .AddTransient<AutoClaimer>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
@@ -45,7 +46,8 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<PushPlus>()
                .AddTransient<DingTalk>()
                .AddTransient<PushDeer>()
-               .AddLogging(loggingBuilder => {
+			   .AddTransient<Discord>()
+			   .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();
                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);

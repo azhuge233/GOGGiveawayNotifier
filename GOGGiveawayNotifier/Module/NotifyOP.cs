@@ -67,6 +67,12 @@ namespace GOGGiveawayNotifier.Module {
 					await services.GetRequiredService<PushDeer>().SendMessage(config, game);
 				} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
 
+				// Discord notifications
+				if (config.EnableDiscord) {
+					_logger.LogInformation(debugEnabledFormat, "Discord");
+					await services.GetRequiredService<Discord>().SendMessage(config, game);
+				} else _logger.LogInformation(debugDisabledFormat, "Discord");
+
 				//Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");

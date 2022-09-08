@@ -1,21 +1,21 @@
-﻿using System;
+﻿using GOGGiveawayNotifier.Model.PostContent;
+using GOGGiveawayNotifier.Model;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model.PostContent;
-using GOGGiveawayNotifier.Model;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class DingTalk: INotifiable {
-		private readonly ILogger<DingTalk> _logger;
+	public class Discord : INotifiable {
+		private readonly ILogger<Discord> _logger;
 
 		#region debug strings
-		private readonly string debugSendMessage = "Send notifications to DingTalk";
+		private readonly string debugSendMessage = "Send notification to Discord";
 		#endregion
 
-		public DingTalk(ILogger<DingTalk> logger) {
+		public Discord(ILogger<Discord> logger) {
 			_logger = logger;
 		}
 
@@ -23,9 +23,19 @@ namespace GOGGiveawayNotifier.Notifier {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var url = new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkUrlFormat, config.DingTalkBotToken).ToString();
-				var content = new DingTalkPostContent();
-				content.Text.Content_ = $"{new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkMessageFormat, record.Name)}{NotifyFormatStrings.projectLink}";
+				var url = config.DiscordWebhookURL;
+				var content = new DiscordPostContent() {
+					Content = "New Free Game - GOG"
+				};
+
+				content.Embeds.Add(
+					new Embed() {
+						Title = record.Name,
+						Url = NotifyFormatStrings.gogGiveawayUrl,
+						Description = NotifyFormatStrings.discordFormat,
+						Footer = new Footer() { Text = NotifyFormatStrings.projectLink }
+					}
+				);
 
 				var data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 				var resp = await new HttpClient().PostAsync(url, data);

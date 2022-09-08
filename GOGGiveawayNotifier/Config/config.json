@@ -6,6 +6,7 @@
   "EnablePushPlus": false,
   "EnableDingTalk": false,
   "EnablePushDeer": false,
+  "EnableDiscord": false,
 
   "TelegramToken": "",
   "TelegramChatID": "",
@@ -23,6 +24,8 @@
 
   "PushDeerToken": "",
 
+  "DiscordWebhookURL": "",
+
   "SMTPServer": "",
   "SMTPPort": 465,
   "FromEmailAddress": "",
@@ -31,5 +34,5 @@
   "AuthPassword": "",
 
   "EnableAutoClaim": true,
-  "Cookie":  ""
+  "Cookie": ""
 }

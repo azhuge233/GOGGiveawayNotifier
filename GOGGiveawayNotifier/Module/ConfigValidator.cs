@@ -76,6 +76,12 @@ namespace GOGGiveawayNotifier.Module {
 						throw new Exception(message: "No PushDeer token provided!");
 				}
 
+				//Discord
+				if (config.EnableDiscord) {
+					if (string.IsNullOrEmpty(config.DiscordWebhookURL))
+						throw new Exception(message: "No Discord Webhook provided!");
+				}
+
 				//Autoclaim
 				if (config.EnableAutoClaim) {
 					if (string.IsNullOrEmpty(config.Cookie)) {
