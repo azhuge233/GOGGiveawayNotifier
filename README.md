@@ -3,7 +3,6 @@
 A CLI tool
 - Fetches GOG giveaway news and sends notifications to Telegram, Bark, Email, QQ, PushPlus, DingTalk, PushDeer and Discord.
 - Auto claim GOG giveaway by carrying given cookies and sending GET request to [https://www.gog.com/giveaway/claim](https://www.gog.com/giveaway/claim)
-  - Auto claim feature is not fully developed (and tested), it only does what is mentioned above, situations like cookie expiration is not handled.
 
 Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
