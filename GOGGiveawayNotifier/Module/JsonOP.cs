@@ -20,13 +20,13 @@ namespace GOGGiveawayNotifier.Module {
 
 		public void WriteData(List<GiveawayRecord> data) {
 			try {
-				if (data != null) {
+				if (data != null && data.Count > 0) {
 					_logger.LogDebug("Writing records!");
 					string json = JsonConvert.SerializeObject(data, Formatting.Indented);
 					File.WriteAllText(recordPath, string.Empty);
 					File.WriteAllText(recordPath, json);
 					_logger.LogDebug("Done");
-				} else _logger.LogDebug("Null data, quit writing records");
+				} else _logger.LogDebug("No data, quit writing records");
 			} catch (Exception) {
 				_logger.LogError("Writing data failed.");
 				throw;
