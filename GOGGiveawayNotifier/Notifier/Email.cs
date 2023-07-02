@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class Email : INotifiable {
@@ -19,13 +20,13 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		private MimeMessage CreateMessage(string gameName, string fromAddress, string toAddress) {
+		private MimeMessage CreateMessage(List<GiveawayRecord> games, string fromAddress, string toAddress) {
 			try {
 				_logger.LogDebug(debugCreateMessage);
 
 				var message = new MimeMessage();
 
-				message.From.Add(new MailboxAddress("EpicBundle-FreeGames", fromAddress));
+				message.From.Add(new MailboxAddress("GOG-FreeGames", fromAddress));
 				message.To.Add(new MailboxAddress("Receiver", toAddress));
 
 				var sb = new StringBuilder();
@@ -33,10 +34,13 @@ namespace GOGGiveawayNotifier.Notifier {
 				message.Subject = sb.Append(NotifyFormatStrings.emailTitleFormat).ToString();
 				
 				sb.Clear();
+
+				games.ForEach(game => sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, game.Name, game.Url));
+
+				sb.Append(NotifyFormatStrings.projectLinkHTML);
+
 				message.Body = new TextPart("html") {
-					Text = sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, gameName)
-						.Append(NotifyFormatStrings.projectLinkHTML)
-						.ToString()
+					Text = sb.ToString()
 				};
 
 				_logger.LogDebug($"Done: {debugCreateMessage}");
@@ -47,11 +51,11 @@ namespace GOGGiveawayNotifier.Notifier {
 			}
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var message = CreateMessage(game.Name, config.FromEmailAddress, config.ToEmailAddress);
+				var message = CreateMessage(games, config.FromEmailAddress, config.ToEmailAddress);
 
 				using var client = new SmtpClient();
 				client.Connect(config.SMTPServer, config.SMTPPort, true);

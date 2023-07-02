@@ -4,6 +4,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class TgBot : INotifiable {
@@ -17,15 +19,19 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 			try {
 				_logger.LogDebug(debugSendMessage);
-				await BotClient.SendTextMessageAsync(
+
+				foreach (var game in games) {
+					await BotClient.SendTextMessageAsync(
 						chatId: config.TelegramChatID,
-						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name)}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
+						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name, game.Url, RemoveSpecialCharacters(game.Name))}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
 						parseMode: ParseMode.Html
 					);
+				}
+
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugSendMessage}");
@@ -33,6 +39,10 @@ namespace GOGGiveawayNotifier.Notifier {
 			} finally {
 				Dispose();
 			}
+		}
+
+		private static string RemoveSpecialCharacters(string str) {
+			return Regex.Replace(str, ParseStrings.removeSpecialCharsRegex, string.Empty);
 		}
 
 		public void Dispose() {

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using GOGGiveawayNotifier.Module;
+using System.Linq;
+using GOGGiveawayNotifier.Model;
 
 namespace GOGGiveawayNotifier {
 	class Program {
@@ -17,19 +19,27 @@ namespace GOGGiveawayNotifier {
 				using (services as IDisposable) {
 					var jsonOp = services.GetRequiredService<JsonOP>();
 					var config = jsonOp.LoadConfig();
+					var scraper = services.GetRequiredService<Scraper>();
+					var parser = services.GetRequiredService<Parser>();
+
 					services.GetRequiredService<ConfigValidator>().CheckValid(config);
 
-					var htmlDoc = services.GetRequiredService<Scraper>().GetHtmlSource();
-					//var htmlDoc = new HtmlAgilityPack.HtmlDocument();
-					//htmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
+					var gogHomeHtmlDoc = scraper.GetGOGHomeSource();
+					var gogProductPageHtmlDoc = scraper.GetGOGProductSource();
+					// var gogProductPageHtmlDoc = gogHomeHtmlDoc;
+					// var gogHomeHtmlDoc = new HtmlAgilityPack.HtmlDocument();
+					// gogHomeHtmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
 
-					var newGiveaway = services.GetRequiredService<Parser>().Parse(htmlDoc, jsonOp.LoadData());
+					var oldRecords = jsonOp.LoadData();
 
-					await services.GetRequiredService<NotifyOP>().Notify(config, newGiveaway);
+					var tuple1 = parser.ParseGiveaway(gogHomeHtmlDoc, oldRecords);
+					var tuple2 = parser.ParseFreeGames(gogProductPageHtmlDoc, oldRecords, tuple1.Item1, tuple1.Item2);
 
-					jsonOp.WriteData(newGiveaway);
+					await services.GetRequiredService<NotifyOP>().Notify(config, tuple2.Item2);
 
-					var claimResult = await services.GetRequiredService<AutoClaimer>().Claim(config, newGiveaway);
+					jsonOp.WriteData(tuple2.Item1);
+
+					var claimResult = await services.GetRequiredService<AutoClaimer>().Claim(config, tuple2.Item2.FirstOrDefault(game => game.Url == ParseStrings.GiveawayUrl));
 				}
 
 				logger.Info("- End Job -\n\n");

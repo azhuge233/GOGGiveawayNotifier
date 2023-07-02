@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using GOGGiveawayNotifier.Model;
 using GOGGiveawayNotifier.Notifier;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Module {
 	class NotifyOP : IDisposable {
@@ -22,9 +23,9 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public async Task Notify(NotifyConfig config, GiveawayRecord game) {
-			if (game == null || string.IsNullOrEmpty(game.Name)) {
-				_logger.LogInformation("There's no (new) giveaway currently.");
+		public async Task Notify(NotifyConfig config, List<GiveawayRecord> game) {
+			if (game == null || game.Count == 0) {
+				_logger.LogInformation("There's no (new) free games currently.");
 				return;
 			}
 

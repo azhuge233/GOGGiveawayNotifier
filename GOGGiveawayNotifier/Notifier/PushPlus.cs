@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class PushPlus: INotifiable {
@@ -18,16 +19,22 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord record) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
 				var url = new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusUrlFormat, config.PushPlusToken, HttpUtility.UrlEncode(NotifyFormatStrings.pushPlusTitleFormat));
-				var message = HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusBodyFormat, record.Name).ToString());
 
+				var sb = new StringBuilder();
+				foreach (var game in games) {
+					sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat, game.Name, game.Url);
+				}
+
+				var message = HttpUtility.UrlEncode(sb.ToString());
+
+				sb.Clear();
 				var resp = await new HtmlWeb().LoadFromWebAsync(
-					new StringBuilder()
-						.Append(url)
+					sb.Append(url)
 						.Append(message)
 						.Append(NotifyFormatStrings.projectLinkHTML)
 						.ToString()

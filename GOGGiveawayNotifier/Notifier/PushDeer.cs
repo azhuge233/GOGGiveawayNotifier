@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using HtmlAgilityPack;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	internal class PushDeer: INotifiable {
@@ -18,18 +19,21 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord record) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				var webGet = new HtmlWeb();
-				_logger.LogDebug($"{debugSendMessage} : {record.Name}");
-				await webGet.LoadFromWebAsync(
-					 new StringBuilder()
-					 .AppendFormat(NotifyFormatStrings.pushDeerUrlFormat, 
-								config.PushDeerToken, 
-								HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.pushDeerFormat, record.Name).ToString()))
-					 .Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
-					 .ToString()
-				 );
+
+				foreach (var game in games) {
+					_logger.LogDebug($"{debugSendMessage} : {game.Name}");
+					await webGet.LoadFromWebAsync(
+						 new StringBuilder()
+						 .AppendFormat(NotifyFormatStrings.pushDeerUrlFormat,
+									config.PushDeerToken,
+									HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.pushDeerFormat, game.Name, game.Url).ToString()))
+						 .Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
+						 .ToString()
+					 );
+				}
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {

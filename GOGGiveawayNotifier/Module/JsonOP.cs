@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Module {
 	public class JsonOP : IDisposable {
@@ -17,27 +18,25 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public void WriteData(GiveawayRecord data) {
+		public void WriteData(List<GiveawayRecord> data) {
 			try {
-				if (data != null && !string.IsNullOrEmpty(data.Name)) {
+				if (data != null) {
 					_logger.LogDebug("Writing records!");
 					string json = JsonConvert.SerializeObject(data, Formatting.Indented);
 					File.WriteAllText(recordPath, string.Empty);
 					File.WriteAllText(recordPath, json);
 					_logger.LogDebug("Done");
-				} else _logger.LogDebug("No records detected, quit writing records");
+				} else _logger.LogDebug("Null data, quit writing records");
 			} catch (Exception) {
 				_logger.LogError("Writing data failed.");
 				throw;
-			} finally {
-				Dispose();
 			}
 		}
 
-		public GiveawayRecord LoadData() {
+		public List<GiveawayRecord> LoadData() {
 			try {
 				_logger.LogDebug("Loading previous records");
-				var content = JsonConvert.DeserializeObject<GiveawayRecord>(File.ReadAllText(recordPath));
+				var content = JsonConvert.DeserializeObject<List<GiveawayRecord>>(File.ReadAllText(recordPath));
 				_logger.LogDebug("Done");
 				return content;
 			} catch (Exception) {

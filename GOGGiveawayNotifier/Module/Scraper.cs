@@ -5,28 +5,40 @@ using Microsoft.Extensions.Logging;
 namespace GOGGiveawayNotifier.Module {
 	class Scraper: IDisposable {
 		private readonly ILogger<Scraper> _logger;
-		private readonly string url = "https://www.gog.com/";
+		private readonly string GogHomeUrl = "https://www.gog.com/";
+		private readonly string GogProductUrl = "https://www.gog.com/games?priceRange=0,0&discounted=true";
 
 		#region debug strings
-		private readonly string debugGetSource = "Getting page source";
+		private readonly string debugGetSource = "Getting page source: {0}";
 		#endregion
 
 		public Scraper(ILogger<Scraper> logger) {
 			_logger = logger;
 		}
 
-		public HtmlDocument GetHtmlSource() {
+		public HtmlDocument GetGOGHomeSource() {
 			try {
-				_logger.LogDebug(debugGetSource);
+				_logger.LogDebug(debugGetSource, GogHomeUrl);
 				var webGet = new HtmlWeb();
-				var htmlDoc = webGet.Load(url);
-				_logger.LogDebug($"Done: {debugGetSource}");
+				var htmlDoc = webGet.Load(GogHomeUrl);
+				_logger.LogDebug($"Done: {debugGetSource}", GogHomeUrl);
 				return htmlDoc;
 			} catch (Exception) {
-				_logger.LogError($"Error: {debugGetSource}");
+				_logger.LogError($"Error: {debugGetSource}", GogHomeUrl);
 				throw;
-			} finally {
-				Dispose();
+			}
+		}
+
+		public HtmlDocument GetGOGProductSource() {
+			try {
+				_logger.LogDebug(debugGetSource, GogProductUrl);
+				var webGet = new HtmlWeb();
+				var htmlDoc = webGet.Load(GogProductUrl);
+				_logger.LogDebug($"Done: {debugGetSource}", GogProductUrl);
+				return htmlDoc;
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugGetSource}", GogProductUrl);
+				throw;
 			}
 		}
 

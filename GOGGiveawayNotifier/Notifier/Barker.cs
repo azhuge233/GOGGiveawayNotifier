@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class Barker : INotifiable {
@@ -18,21 +19,23 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				var sb = new StringBuilder();
 				string url = sb.AppendFormat(NotifyFormatStrings.barkUrlWithTitleFormat, config.BarkAddress, config.BarkToken).ToString();
 				var webGet = new HtmlWeb();
 
-				sb.Clear();
-				_logger.LogDebug($"{debugSendMessage} : {game.Name}");
-				await webGet.LoadFromWebAsync(
-					sb.Append(url)
-					.Append(HttpUtility.UrlEncode(game.Name))
-					.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
-					.Append(NotifyFormatStrings.barkUrlArgs)
-					.ToString()
-				);
+				foreach (var game in games) {
+					sb.Clear();
+					_logger.LogDebug($"{debugSendMessage} : {game.Name}");
+					await webGet.LoadFromWebAsync(
+						sb.Append(url)
+						.Append(HttpUtility.UrlEncode(game.Name))
+						.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
+						.AppendFormat(NotifyFormatStrings.barkUrlArgs, HttpUtility.UrlEncode(game.Url))
+						.ToString()
+					);
+				}
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {

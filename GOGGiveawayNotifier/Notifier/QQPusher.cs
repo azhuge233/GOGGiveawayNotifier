@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class QQPusher: INotifiable {
@@ -18,21 +19,23 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord game) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
 				string url = new StringBuilder().AppendFormat(NotifyFormatStrings.qqUrlFormat, config.QQAddress, config.QQPort, config.ToQQID).ToString();
 				var webGet = new HtmlWeb();
 
-				_logger.LogDebug($"{debugSendMessage} : {game.Name}");
-				await webGet.LoadFromWebAsync(
-					new StringBuilder()
-						.Append(url)
-						.Append(HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name).ToString()))
-						.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
-						.ToString()
-				);
+				foreach (var game in games) {
+					_logger.LogDebug($"{debugSendMessage} : {game.Name}");
+					await webGet.LoadFromWebAsync(
+						new StringBuilder()
+							.Append(url)
+							.Append(HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name, game.Url).ToString()))
+							.Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
+							.ToString()
+					);
+				}
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {

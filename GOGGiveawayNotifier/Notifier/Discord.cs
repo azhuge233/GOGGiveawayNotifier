@@ -6,6 +6,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
 	public class Discord : INotifiable {
@@ -19,7 +20,7 @@ namespace GOGGiveawayNotifier.Notifier {
 			_logger = logger;
 		}
 
-		public async Task SendMessage(NotifyConfig config, GiveawayRecord record) {
+		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
@@ -28,14 +29,16 @@ namespace GOGGiveawayNotifier.Notifier {
 					Content = "New Free Game - GOG"
 				};
 
-				content.Embeds.Add(
-					new Embed() {
-						Title = record.Name,
-						Url = NotifyFormatStrings.gogGiveawayUrl,
-						Description = NotifyFormatStrings.discordFormat,
-						Footer = new Footer() { Text = NotifyFormatStrings.projectLink }
-					}
-				);
+				foreach (var game in games) {
+					content.Embeds.Add(
+						new Embed() {
+							Title = game.Name,
+							Url = game.Url,
+							Description = string.Format(NotifyFormatStrings.discordFormat, game.Url),
+							Footer = new Footer() { Text = NotifyFormatStrings.projectLink }
+						}
+					);
+				}
 
 				var data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 				var resp = await new HttpClient().PostAsync(url, data);
