@@ -17,7 +17,7 @@ Follow commands will publish project as a executable file.
 ```
 git clone https://github.com/azhuge233/GOGGiveawayNotifier.git
 cd GOGGiveawayNotifier
-dotnet publish -c Release -o /your/path/here -r [win-x64/osx-x64/linux-x64/...] --sc
+dotnet publish -c Release -p:PublishDir=/your/path/here -r [win-x64/osx-x64/linux-x64/...] --sc
 ```
 
 ## Usage
