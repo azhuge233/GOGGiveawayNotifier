@@ -16,6 +16,9 @@
 		public static readonly string emailBodyFormat = "<br>{0}<br>" + "领取链接: <a href=\"{1}\">{1}</a>";
 
 		public static readonly string qqUrlFormat = "http://{0}:{1}/send_private_msg?user_id={2}&message=";
+		internal static readonly string qqRedUrlFormat = "ws://{0}:{1}";
+		internal static readonly string qqRedWSConnectPacketType = "meta::connect";
+		internal static readonly string qqRedWSSendPacketType = "message::send";
 		public static readonly string qqMessageFormat = "GOG Free Game\n\n" +
 			"{0}\n" +
 			"领取链接: {1}";

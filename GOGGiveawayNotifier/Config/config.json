@@ -3,6 +3,7 @@
   "EnableBark": false,
   "EnableEmail": false,
   "EnableQQ": false,
+  "EnableRed": false,
   "EnablePushPlus": false,
   "EnableDingTalk": false,
   "EnablePushDeer": false,
@@ -16,6 +17,11 @@
 
   "QQAddress": "127.0.0.1",
   "QQPort": 5700,
+
+  "RedAddress": "127.0.0.1",
+  "RedPort": 16530,
+  "RedToken": "",
+
   "ToQQID": "",
 
   "PushPlusToken": "",
