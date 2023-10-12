@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System;
 using Websocket.Client;
-using Telegram.Bot.Types;
 using System.Linq;
 
 namespace GOGGiveawayNotifier.Notifier {
@@ -59,7 +58,9 @@ namespace GOGGiveawayNotifier.Notifier {
 					Elements = new List<object>() {
 						new TextElementRoot() {
 							TextElement = new TextElement() {
-								Content = new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name, game.Url).ToString()
+								Content = new StringBuilder().AppendFormat(NotifyFormatStrings.qqMessageFormat, game.Name, game.Url)
+															.Append(NotifyFormatStrings.projectLink)
+															.ToString()
 							}
 						}
 					}
