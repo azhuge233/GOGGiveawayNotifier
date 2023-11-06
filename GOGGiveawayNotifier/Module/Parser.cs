@@ -70,7 +70,7 @@ namespace GOGGiveawayNotifier.Module {
 				} else _logger.LogDebug($"Found free games count: {tiles.Count}");
 
 				foreach (var tile in tiles) {
-					var name = tile.SelectSingleNode(ParseStrings.productTitleSpanXPath).InnerText;
+					var name = tile.SelectNodes(ParseStrings.productTitleSpanXPath).Last().InnerText;
 					var url = tile.SelectSingleNode(ParseStrings.productLinkXPath).Attributes["href"].Value;
 
 					var newFreeGame = new GiveawayRecord() {

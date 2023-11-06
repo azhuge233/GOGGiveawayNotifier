@@ -26,9 +26,11 @@ namespace GOGGiveawayNotifier {
 
 					var gogHomeHtmlDoc = scraper.GetGOGHomeSource();
 					var gogProductPageHtmlDoc = scraper.GetGOGProductSource();
-					// var gogProductPageHtmlDoc = gogHomeHtmlDoc;
-					// var gogHomeHtmlDoc = new HtmlAgilityPack.HtmlDocument();
-					// gogHomeHtmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
+					//var gogProductPageHtmlDoc = gogHomeHtmlDoc;
+					//var gogHomeHtmlDoc = new HtmlAgilityPack.HtmlDocument();
+					//gogHomeHtmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
+					//var gogProductPageHtmlDoc = new HtmlAgilityPack.HtmlDocument();
+					//gogProductPageHtmlDoc.LoadHtml(System.IO.File.ReadAllText("test2.html"));
 
 					var oldRecords = jsonOp.LoadData();
 
