@@ -10,7 +10,7 @@ Demo Telegram Channel [@azhuge233_FreeGames](https://t.me/azhuge233_FreeGames)
 
 ## Build
 
-Install dotnet 7.0 SDK first, you can find installation packages/guides [here](https://dotnet.microsoft.com/download).
+Install dotnet 8.0 SDK first, you can find installation packages/guides [here](https://dotnet.microsoft.com/download).
 
 Follow commands will publish project as a executable file.
 
