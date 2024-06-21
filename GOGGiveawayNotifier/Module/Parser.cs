@@ -23,18 +23,26 @@ namespace GOGGiveawayNotifier.Module {
 			try {
 				_logger.LogDebug(debugParseGiveaway);
 
-				var titleHref = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.titleLableXpath);
+				var giveawayDiv = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.giveawayDivXPath);
 				var resultList = new List<GiveawayRecord>();
 				var notifyList = new List<GiveawayRecord>();
 
-				if (titleHref == null) {
+				if (giveawayDiv == null) {
 					_logger.LogDebug("No giveaway detected");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
 					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
 				}
 
+				var giveawayALink = giveawayDiv.SelectSingleNode(ParseStrings.giveawayALinkXPath);
+
+				if (giveawayALink == null) {
+					_logger.LogDebug("Get giveaway link failed");
+					_logger.LogDebug($"Done: {debugParseGiveaway}");
+					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+				}
+
 				var newGiveaway = new GiveawayRecord {
-					Name = titleHref.Attributes["ng-href"].Value.Split("/game/")[^1].Replace("_", " "),
+					Name = giveawayALink.Attributes["href"].Value.Split("/game/").Last().Replace("_", " "),
 					Url = ParseStrings.GiveawayUrl
 				};
 				var textInfo = new CultureInfo("en-US", false).TextInfo;
