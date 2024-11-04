@@ -25,7 +25,7 @@ namespace GOGGiveawayNotifier.Notifier {
 				_logger.LogDebug(debugSendMessage);
 
 				foreach (var game in games) {
-					await BotClient.SendTextMessageAsync(
+					await BotClient.SendMessage(
 						chatId: config.TelegramChatID,
 						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name, game.Url, RemoveSpecialCharacters(game.Name))}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
 						parseMode: ParseMode.Html
