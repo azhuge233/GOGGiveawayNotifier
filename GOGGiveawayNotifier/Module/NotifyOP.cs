@@ -32,28 +32,30 @@ namespace GOGGiveawayNotifier.Module {
 			try {
 				_logger.LogDebug(debugNotify);
 
+				var notifyTask = new List<Task>();
+
 				// Telegram notifications
 				if (config.EnableTelegram) {
 					_logger.LogInformation(debugEnabledFormat, "Telegram");
-					await services.GetRequiredService<TgBot>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<TgBot>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Telegram");
 
 				// Bark notifications
 				if (config.EnableBark) {
 					_logger.LogInformation(debugEnabledFormat, "Bark");
-					await services.GetRequiredService<Barker>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<Barker>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Bark");
 
 				//QQ notifications
 				if (config.EnableQQ) {
 					_logger.LogInformation(debugEnabledFormat, "QQ");
-					await services.GetRequiredService<QQPusher>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<QQPusher>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "QQ");
 
 				//QQ Red (Chronocat) notifications
 				if (config.EnableRed) {
 					_logger.LogInformation(debugEnabledFormat, "QQ Red (Chronocat)");
-					await services.GetRequiredService<QQRed>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<QQRed>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "QQ Red (Chronocat)");
 
 				// PushPlus notifications
@@ -65,26 +67,28 @@ namespace GOGGiveawayNotifier.Module {
 				// DingTalk notifications
 				if (config.EnableDingTalk) {
 					_logger.LogInformation(debugEnabledFormat, "DingTalk");
-					await services.GetRequiredService<DingTalk>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<DingTalk>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "DingTalk");
 
 				// PushDeer notifications
 				if (config.EnablePushDeer) {
 					_logger.LogInformation(debugEnabledFormat, "PushDeer");
-					await services.GetRequiredService<PushDeer>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<PushDeer>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "PushDeer");
 
 				// Discord notifications
 				if (config.EnableDiscord) {
 					_logger.LogInformation(debugEnabledFormat, "Discord");
-					await services.GetRequiredService<Discord>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<Discord>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Discord");
 
 				//Email notifications
 				if (config.EnableEmail) {
 					_logger.LogInformation(debugEnabledFormat, "Email");
-					await services.GetRequiredService<Email>().SendMessage(config, game);
+					notifyTask.Add(services.GetRequiredService<Email>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Email");
+
+				await Task.WhenAll(notifyTask);
 
 				_logger.LogDebug($"Done: {debugNotify}");
 			} catch (Exception) {
