@@ -26,7 +26,7 @@ namespace GOGGiveawayNotifier {
 
 					var gogHomeHtmlDoc = scraper.GetGOGHomeSource();
 					var gogProductPageHtmlDoc = scraper.GetGOGProductSource();
-					//var gogProductPageHtmlDoc = gogHomeHtmlDoc;
+
 					//var gogHomeHtmlDoc = new HtmlAgilityPack.HtmlDocument();
 					//gogHomeHtmlDoc.LoadHtml(System.IO.File.ReadAllText("test.html"));
 					//var gogProductPageHtmlDoc = new HtmlAgilityPack.HtmlDocument();

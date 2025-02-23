@@ -88,6 +88,12 @@ namespace GOGGiveawayNotifier.Module {
 					notifyTask.Add(services.GetRequiredService<Email>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Email");
 
+				// Meow notifications
+				if (config.EnableMeow) {
+					_logger.LogInformation(debugEnabledFormat, "Meow");
+					notifyTask.Add(services.GetRequiredService<Meow>().SendMessage(config, game));
+				} else _logger.LogInformation(debugDisabledFormat, "Meow");
+
 				await Task.WhenAll(notifyTask);
 
 				_logger.LogDebug($"Done: {debugNotify}");

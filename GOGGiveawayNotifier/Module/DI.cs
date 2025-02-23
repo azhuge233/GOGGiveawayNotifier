@@ -28,6 +28,7 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<DingTalk>()
                .AddTransient<PushDeer>()
 			   .AddTransient<Discord>()
+               .AddTransient<Meow>()
 			   .AddTransient<AutoClaimer>()
                .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
@@ -49,6 +50,7 @@ namespace GOGGiveawayNotifier.Module {
                .AddTransient<DingTalk>()
                .AddTransient<PushDeer>()
 			   .AddTransient<Discord>()
+			   .AddTransient<Meow>()
 			   .AddLogging(loggingBuilder => {
                    // configure Logging with NLog
                    loggingBuilder.ClearProviders();

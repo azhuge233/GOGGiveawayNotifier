@@ -1,5 +1,6 @@
 ﻿namespace GOGGiveawayNotifier.Model {
 	public static class NotifyFormatStrings {
+		#region notify format
 		public static readonly string telegramFormat = "<b>GOG Free Games</b>\n\n" +
 			"<i>{0}</i>\n" +
 			"Link: <a href=\"{1}\">{1}</a>\n\n" +
@@ -38,6 +39,12 @@
 			"Link: {1}";
 
 		public static readonly string discordFormat = "Link: {0}";
+
+		public static readonly string meowUrlFormat = "{0}/{1}";
+		public static readonly string meowTitle = "GOGGiveawayNotifier";
+		public static readonly string meowMessageFormat = "{0}\n" +
+			"Link: {1}";
+		#endregion
 
 		public static readonly string projectLink = "\n\nFrom https://github.com/azhuge233/GOGGiveawayNotifier";
 		public static readonly string projectLinkHTML = "<br><br>From <a href=\"https://github.com/azhuge233/GOGGiveawayNotifier\">GOGGiveawayNotifier</a>";

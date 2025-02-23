@@ -39,6 +39,10 @@
   "AuthAccount": "",
   "AuthPassword": "",
 
+  "EnableMeow": false,
+  "MeowAddress": "https://api.chuckfang.com",
+  "MeowNickname": "",
+
   "EnableAutoClaim": true,
   "Cookie": ""
 }
