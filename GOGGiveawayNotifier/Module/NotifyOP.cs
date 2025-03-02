@@ -46,17 +46,17 @@ namespace GOGGiveawayNotifier.Module {
 					notifyTask.Add(services.GetRequiredService<Barker>().SendMessage(config, game));
 				} else _logger.LogInformation(debugDisabledFormat, "Bark");
 
-				//QQ notifications
-				if (config.EnableQQ) {
-					_logger.LogInformation(debugEnabledFormat, "QQ");
-					notifyTask.Add(services.GetRequiredService<QQPusher>().SendMessage(config, game));
-				} else _logger.LogInformation(debugDisabledFormat, "QQ");
+				// QQ Http notifications
+				if (config.EnableQQHttp) {
+					_logger.LogInformation(debugEnabledFormat, "QQ Http");
+					notifyTask.Add(services.GetRequiredService<QQHttp>().SendMessage(config, game));
+				} else _logger.LogInformation(debugDisabledFormat, "QQ Http");
 
-				//QQ Red (Chronocat) notifications
-				if (config.EnableRed) {
-					_logger.LogInformation(debugEnabledFormat, "QQ Red (Chronocat)");
-					notifyTask.Add(services.GetRequiredService<QQRed>().SendMessage(config, game));
-				} else _logger.LogInformation(debugDisabledFormat, "QQ Red (Chronocat)");
+				// QQ WebSocket notifications
+				if (config.EnableQQWebSocket) {
+					_logger.LogInformation(debugEnabledFormat, "QQ WebSocket");
+					notifyTask.Add(services.GetRequiredService<QQWebSocket>().SendMessage(config, game));
+				} else _logger.LogInformation(debugDisabledFormat, "QQ WebSocket");
 
 				// PushPlus notifications
 				if (config.EnablePushPlus) {
