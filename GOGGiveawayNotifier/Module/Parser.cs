@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
+using System.Collections.Generic;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
-using System.Collections.Generic;
-using System.Linq;
+using GOGGiveawayNotifier.Model.GOG;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
 	class Parser : IDisposable {
 		private readonly ILogger<Parser> _logger;
+
+		private readonly IServiceProvider services = DI.BuildDiScraperOnly();
 
 		#region debug strings
 		private readonly string debugParseGiveaway = "Parsing giveaway";
@@ -19,53 +25,49 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public Tuple<List<GiveawayRecord>, List<GiveawayRecord>> ParseGiveaway(string source, List<GiveawayRecord> oldRecords) {
+		public async Task<Tuple<List<GiveawayRecord>, List<GiveawayRecord>>> ParseGiveaway(string data, List<GiveawayRecord> oldRecords) {
 			try {
 				_logger.LogDebug(debugParseGiveaway);
 
-				var htmlDoc = new HtmlDocument();
-				htmlDoc.LoadHtml(source);
-
-				var giveawayDiv = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.giveawayDivXPath);
 				var resultList = new List<GiveawayRecord>();
 				var notifyList = new List<GiveawayRecord>();
 
-				if (giveawayDiv == null) {
-					_logger.LogDebug("No giveaway detected");
+				var sectionsJsonData = JsonConvert.DeserializeObject<HomePageSections>(data);
+
+				var giveawaySection = sectionsJsonData.Sections.FirstOrDefault(section => section.SectionType == ParseStrings.giveawaySectionType, null);
+
+				if (giveawaySection == null) {
+					_logger.LogDebug("No giveaway section detected");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
-
-					resultList.Add(oldRecords.FirstOrDefault(record => record.Url == ParseStrings.GiveawayUrl));
-
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+					return new (resultList, notifyList);
 				}
 
-				var giveawayALink = giveawayDiv.SelectSingleNode(ParseStrings.giveawayALinkXPath);
+				var giveawayData = await services.GetRequiredService<Scraper>().GetGOGGiveawaySource(giveawaySection.SectionID);
 
-				if (giveawayALink == null) {
-					_logger.LogDebug("Get giveaway link failed");
-					_logger.LogDebug($"Done: {debugParseGiveaway}");
-
-					resultList.Add(oldRecords.FirstOrDefault(record => record.Url == ParseStrings.GiveawayUrl));
-
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
-				}
+				var giveawayJsonData = JsonConvert.DeserializeObject<Giveaway>(giveawayData);
 
 				var newGiveaway = new GiveawayRecord {
-					Name = giveawayALink.Attributes["href"].Value.Split("/game/").Last().Replace("_", " "),
-					Url = ParseStrings.GiveawayUrl
+					ID = giveawayJsonData.Properties.Product.ID,
+					Type = ParseStrings.typeGiveaway,
+					Url = ParseStrings.GiveawayUrl,
+					Title = giveawayJsonData.Properties.Product.Title,
+					Slug = giveawayJsonData.Properties.Product.Slug,
+					EndDate = giveawayJsonData.Properties.EndDate.AddHours(5),
+					ProductType = giveawayJsonData.Properties.Product.ProductType,
+					ProductState = giveawayJsonData.Properties.Product.ProductState,
 				};
-				var textInfo = new CultureInfo("en-US", false).TextInfo;
-				newGiveaway.Name = textInfo.ToTitleCase(newGiveaway.Name);
 
-				if (!oldRecords.Any(record => record.Name == newGiveaway.Name)) {
-					_logger.LogInformation($"Found Giveaway {newGiveaway.Name}");
+				_logger.LogDebug($"{newGiveaway.Title} | {newGiveaway.EndDate} | {newGiveaway.ProductType} | {newGiveaway.ProductState}");
+
+				if (!oldRecords.Any(record => record.ID == newGiveaway.ID)) {
+					_logger.LogInformation($"Found Giveaway: {newGiveaway.Title}");
 					notifyList.Add(newGiveaway);
-				} else _logger.LogDebug($"{newGiveaway.Name} is found in previous record");
+				} else _logger.LogDebug($"{newGiveaway.Title} is found in previous record");
 
 				resultList.Add(newGiveaway);
 
 				_logger.LogDebug($"Done: {debugParseGiveaway}");
-				return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+				return new (resultList, notifyList);
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugParseGiveaway}");
 				throw;
@@ -76,41 +78,42 @@ namespace GOGGiveawayNotifier.Module {
 			try {
 				_logger.LogDebug(debugParseFreeGames);
 
-				var htmlDoc = new HtmlDocument();
-				htmlDoc.LoadHtml(source);
-
-				var tiles = htmlDoc.DocumentNode.SelectNodes(ParseStrings.productTileXPath);
 				var resultList = new List<GiveawayRecord>(prevResultList);
 				var notifyList = new List<GiveawayRecord>(prevNotifyList);
 
-				if (tiles == null || tiles.Count == 0) {
+				var catalogsJsonData = JsonConvert.DeserializeObject<Catalogs>(source);
+
+				var products = catalogsJsonData.Products;
+
+				if (products == null || products.Count == 0) {
 					_logger.LogDebug("No free games detected");
-
-					resultList.AddRange(oldRecords.Where(record => record.Url != ParseStrings.GiveawayUrl));
-
 					_logger.LogDebug($"Done: {debugParseFreeGames}");
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
-				} else _logger.LogDebug($"Found free games count: {tiles.Count}");
+					return new (resultList, notifyList);
+				} else _logger.LogDebug($"Found free games count: {products.Count}");
 
-				foreach (var tile in tiles) {
-					var name = tile.SelectNodes(ParseStrings.productTitleSpanXPath).Last().InnerText;
-					var url = tile.SelectSingleNode(ParseStrings.productLinkXPath).Attributes["href"].Value;
-
+				foreach (var product in products) {
 					var newFreeGame = new GiveawayRecord() {
-						Name = name, Url = url
+						ID = product.ID,
+						Type = ParseStrings.typeFreeGame,
+						Url = product.StoreLink,
+						Title = product.Title,
+						Slug = product.Slug,
+						ProductState = product.ProductState,
+						ProductType = product.ProductType
 					};
 
-					if (!oldRecords.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url) ||
-						prevNotifyList.Any(record => record.Name == newFreeGame.Name)) {
-						_logger.LogInformation($"Found new free game: {newFreeGame.Name}");
-						notifyList.Add(newFreeGame);
-					} else _logger.LogDebug($"{newFreeGame.Name} is found in previous record");
+					if (!oldRecords.Any(record => record.ID == newFreeGame.ID)) {
+						_logger.LogInformation($"Found new free game: {newFreeGame.Title}");
+
+						if (!prevResultList.Any(record => record.ID == newFreeGame.ID)) notifyList.Add(newFreeGame);
+						else _logger.LogInformation($"{newFreeGame.Title} is also on giveaway, stop adding to notify list");
+					} else _logger.LogDebug($"{newFreeGame.Title} is found in previous record");
 
 					resultList.Add(newFreeGame);
 				}
 
 				_logger.LogDebug($"Done: {debugParseFreeGames}");
-				return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+				return new (resultList, notifyList);
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugParseFreeGames}");
 				throw;
