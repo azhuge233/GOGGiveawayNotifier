@@ -30,7 +30,7 @@ namespace GOGGiveawayNotifier.Module {
 				if (giveawayDiv == null) {
 					_logger.LogDebug("No giveaway detected");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(oldRecords, notifyList);
 				}
 
 				var giveawayALink = giveawayDiv.SelectSingleNode(ParseStrings.giveawayALinkXPath);
