@@ -59,5 +59,17 @@ namespace GOGGiveawayNotifier.Module {
                })
                .BuildServiceProvider();
         }
-    }
+
+		public static IServiceProvider BuildDiScraperOnly() {
+			return new ServiceCollection()
+			   .AddTransient<Scraper>()
+			   .AddLogging(loggingBuilder => {
+				   // configure Logging with NLog
+				   loggingBuilder.ClearProviders();
+				   loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+				   loggingBuilder.AddNLog(logConfig);
+			   })
+			   .BuildServiceProvider();
+		}
+	}
 }
