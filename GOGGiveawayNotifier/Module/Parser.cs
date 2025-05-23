@@ -38,7 +38,7 @@ namespace GOGGiveawayNotifier.Module {
 				if (giveawayALink == null) {
 					_logger.LogDebug("Get giveaway link failed");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
+					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(oldRecords, notifyList);
 				}
 
 				var newGiveaway = new GiveawayRecord {
