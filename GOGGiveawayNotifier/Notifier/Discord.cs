@@ -30,11 +30,17 @@ namespace GOGGiveawayNotifier.Notifier {
 				};
 
 				foreach (var game in games) {
+					string description = string.Empty;
+
+					if(game.Type == ParseStrings.typeGiveaway)
+						description = string.Format(NotifyFormatStrings.discordFormat[0], game.EndDate, game.Url, game.Title);
+					else description = string.Format(NotifyFormatStrings.discordFormat[1], game.Url, game.Title);
+
 					content.Embeds.Add(
 						new Embed() {
-							Title = game.Name,
+							Title = game.Title,
 							Url = game.Url,
-							Description = string.Format(NotifyFormatStrings.discordFormat, game.Url),
+							Description = description,
 							Footer = new Footer() { Text = NotifyFormatStrings.projectLink }
 						}
 					);
