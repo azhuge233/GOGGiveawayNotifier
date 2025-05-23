@@ -1,22 +1,35 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace GOGGiveawayNotifier.Module {
 	class Scraper: IDisposable {
 		private readonly ILogger<Scraper> _logger;
-		private readonly string GogHomeUrl = "https://www.gog.com/";
-		private readonly string GogProductUrl = "https://www.gog.com/games?priceRange=0,0&discounted=true";
-
-		private readonly HttpClient Client = new();
 
 		#region debug strings
 		private readonly string debugGetSource = "Getting page source: {0}";
 		#endregion
 
+		#region GOG Urls
+		private readonly string GogHomeUrl = "https://sections.gog.com/v1/pages/2f?locale=zh-Hans";
+		private readonly string GogCatalogUrl = "https://catalog.gog.com/v1/catalog?&price=between:0,0&&discounted=eq:true&page=1";
+		private readonly string GogGiveawaySectionUrl = @"https://sections.gog.com/v1/pages/2f/sections/{0}?locale=zh-Hans";
+		#endregion
+
+		#region Http Client Headers
+		private readonly string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0";
+		private readonly string CacheControl = "no-cache";
+		#endregion
+
+		private readonly HttpClient Client = new();
+
 		public Scraper(ILogger<Scraper> logger) {
 			_logger = logger;
+
+			Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+			Client.DefaultRequestHeaders.Add("Cache-Control", CacheControl);
 		}
 
 		public async Task<string> GetGOGHomeSource() {
@@ -26,6 +39,8 @@ namespace GOGGiveawayNotifier.Module {
 				var resp = await Client.GetAsync(GogHomeUrl);
 				var result = await resp.Content.ReadAsStringAsync();
 
+				// await File.WriteAllTextAsync($"{AppDomain.CurrentDomain.BaseDirectory}Test{Path.DirectorySeparatorChar}home.json", result);
+
 				_logger.LogDebug($"Done: {debugGetSource}", GogHomeUrl);
 				return result;
 			} catch (Exception) {
@@ -34,17 +49,38 @@ namespace GOGGiveawayNotifier.Module {
 			}
 		}
 
-		public async Task<string> GetGOGProductSource() {
+		public async Task<string> GetGOGGiveawaySource(string sectionID) {
 			try {
-				_logger.LogDebug(debugGetSource, GogProductUrl);
+				_logger.LogDebug(debugGetSource, GogGiveawaySectionUrl);
 
-				var resp = await Client.GetAsync(GogProductUrl);
+				string url = string.Format(GogGiveawaySectionUrl, sectionID);
+
+				var resp = await Client.GetAsync(url);
 				var result = await resp.Content.ReadAsStringAsync();
 
-				_logger.LogDebug($"Done: {debugGetSource}", GogProductUrl);
+				// await File.WriteAllTextAsync($"{AppDomain.CurrentDomain.BaseDirectory}Test{Path.DirectorySeparatorChar}giveaway.json", result);
+
+				_logger.LogDebug($"Done: {debugGetSource}", GogGiveawaySectionUrl);
 				return result;
 			} catch (Exception) {
-				_logger.LogError($"Error: {debugGetSource}", GogProductUrl);
+				_logger.LogError($"Error: {debugGetSource}", GogGiveawaySectionUrl);
+				throw;
+			}
+		}
+
+		public async Task<string> GetGOGCatalogSource() {
+			try {
+				_logger.LogDebug(debugGetSource, GogCatalogUrl);
+
+				var resp = await Client.GetAsync(GogCatalogUrl);
+				var result = await resp.Content.ReadAsStringAsync();
+
+				// await File.WriteAllTextAsync($"{AppDomain.CurrentDomain.BaseDirectory}Test{Path.DirectorySeparatorChar}catalog.json", result);
+
+				_logger.LogDebug($"Done: {debugGetSource}", GogCatalogUrl);
+				return result;
+			} catch (Exception) {
+				_logger.LogError($"Error: {debugGetSource}", GogCatalogUrl);
 				throw;
 			}
 		}
