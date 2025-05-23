@@ -38,12 +38,20 @@ namespace GOGGiveawayNotifier.Notifier {
 		}
 
 		private static List<WSPacket> GetSendPacket(NotifyConfig config, List<GiveawayRecord> games) {
-			return games.Select(game => new WSPacket {
-				Action = NotifyFormatStrings.qqWebSocketSendAction,
-				Params = new Param { 
-					UserID = config.ToQQID,
-					Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat, game.Name, game.Url)}{NotifyFormatStrings.projectLink}"
-				}
+			return games.Select(game => {
+				string message = string.Empty;
+
+				if (game.Type == ParseStrings.typeGiveaway)
+					message = string.Format(NotifyFormatStrings.qqMessageFormat[0], game.Title, game.EndDate, game.Url);
+				else message = string.Format(NotifyFormatStrings.qqMessageFormat[1], game.Title, game.Url);
+
+				return new WSPacket {
+					Action = NotifyFormatStrings.qqWebSocketSendAction,
+					Params = new Param {
+						UserID = config.ToQQID,
+						Message = $"{message}{NotifyFormatStrings.projectLink}"
+					}
+				};
 			}).ToList();
 		}
 

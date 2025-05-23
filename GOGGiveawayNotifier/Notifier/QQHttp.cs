@@ -24,7 +24,7 @@ namespace GOGGiveawayNotifier.Notifier {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				string url = string.Format(NotifyFormatStrings.qqUrlFormat, config.QQHttpAddress, config.QQHttpPort, config.QQHttpToken).ToString();
+				string url = string.Format(NotifyFormatStrings.qqUrlFormat, config.QQHttpAddress, config.QQHttpPort, config.QQHttpToken);
 
 				var client = new HttpClient();
 
@@ -36,9 +36,11 @@ namespace GOGGiveawayNotifier.Notifier {
 				var resp = new HttpResponseMessage();
 
 				foreach (var game in games) {
-					_logger.LogDebug($"{debugSendMessage} : {game.Name}");
+					_logger.LogDebug($"{debugSendMessage} : {game.Title}");
 
-					content.Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat, game.Name, game.Url)}{NotifyFormatStrings.projectLink}";
+					if(game.Type == ParseStrings.typeGiveaway)
+						content.Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat[0], game.Title, game.EndDate, game.Url)}{NotifyFormatStrings.projectLink}";
+					else content.Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat[1], game.Title, game.Url)}{NotifyFormatStrings.projectLink}";
 
 					data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 					resp = await client.PostAsync(url, data);
