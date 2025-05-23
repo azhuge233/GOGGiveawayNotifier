@@ -33,7 +33,13 @@ namespace GOGGiveawayNotifier.Notifier {
 				var client = new HttpClient();
 
 				foreach (var game in games) {
-					content.Message = $"{string.Format(NotifyFormatStrings.meowMessageFormat, game.Name, game.Url)}{NotifyFormatStrings.projectLink}";
+					string message = string.Empty;
+
+					if (game.Type == ParseStrings.typeGiveaway)
+						message = string.Format(NotifyFormatStrings.meowMessageFormat[0], game.Title, game.EndDate, game.Url);
+					else message = string.Format(NotifyFormatStrings.meowMessageFormat[1], game.Title, game.Url);
+
+					content.Message = $"{message}{NotifyFormatStrings.projectLink}";
 					content.Url = game.Url;
 
 					var data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
