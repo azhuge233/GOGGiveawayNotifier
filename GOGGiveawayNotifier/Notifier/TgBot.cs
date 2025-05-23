@@ -25,9 +25,15 @@ namespace GOGGiveawayNotifier.Notifier {
 				_logger.LogDebug(debugSendMessage);
 
 				foreach (var game in games) {
+					string message = string.Empty;
+
+					if (game.Type == ParseStrings.typeGiveaway)
+						message = string.Format(NotifyFormatStrings.telegramFormat[0], game.Title, game.EndDate, game.Url, RemoveSpecialCharacters(game.Title));
+					else message = string.Format(NotifyFormatStrings.telegramFormat[1], game.Title, game.Url, RemoveSpecialCharacters(game.Title));
+
 					await BotClient.SendMessage(
 						chatId: config.TelegramChatID,
-						text: $"{string.Format(NotifyFormatStrings.telegramFormat, game.Name, game.Url, RemoveSpecialCharacters(game.Name))}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
+						text: $"{message}{NotifyFormatStrings.projectLinkHTML.Replace("<br>", "\n")}",
 						parseMode: ParseMode.Html
 					);
 				}
