@@ -92,7 +92,8 @@ namespace GOGGiveawayNotifier.Module {
 						notifyList.Add(newFreeGame);
 					} else _logger.LogDebug($"{newFreeGame.Name} is found in previous record");
 
-					resultList.Add(newFreeGame);
+					if(!prevResultList.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url))
+						resultList.Add(newFreeGame);
 				}
 
 				_logger.LogDebug($"Done: {debugParseFreeGames}");
