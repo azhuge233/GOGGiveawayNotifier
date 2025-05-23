@@ -30,7 +30,10 @@ namespace GOGGiveawayNotifier.Module {
 				if (giveawayDiv == null) {
 					_logger.LogDebug("No giveaway detected");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(oldRecords, notifyList);
+
+					resultList.Add(oldRecords.FirstOrDefault(record => record.Url == ParseStrings.GiveawayUrl));
+
+					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
 				}
 
 				var giveawayALink = giveawayDiv.SelectSingleNode(ParseStrings.giveawayALinkXPath);
@@ -38,7 +41,10 @@ namespace GOGGiveawayNotifier.Module {
 				if (giveawayALink == null) {
 					_logger.LogDebug("Get giveaway link failed");
 					_logger.LogDebug($"Done: {debugParseGiveaway}");
-					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(oldRecords, notifyList);
+
+					resultList.Add(oldRecords.FirstOrDefault(record => record.Url == ParseStrings.GiveawayUrl));
+
+					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
 				}
 
 				var newGiveaway = new GiveawayRecord {
@@ -73,6 +79,9 @@ namespace GOGGiveawayNotifier.Module {
 
 				if (tiles == null || tiles.Count == 0) {
 					_logger.LogDebug("No free games detected");
+
+					resultList.AddRange(oldRecords.Where(record => record.Url != ParseStrings.GiveawayUrl));
+
 					_logger.LogDebug($"Done: {debugParseFreeGames}");
 					return new Tuple<List<GiveawayRecord>, List<GiveawayRecord>>(resultList, notifyList);
 				} else _logger.LogDebug($"Found free games count: {tiles.Count}");
@@ -91,8 +100,7 @@ namespace GOGGiveawayNotifier.Module {
 						notifyList.Add(newFreeGame);
 					} else _logger.LogDebug($"{newFreeGame.Name} is found in previous record");
 
-					if(!resultList.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url))
-						resultList.Add(newFreeGame);
+					resultList.Add(newFreeGame);
 				}
 
 				_logger.LogDebug($"Done: {debugParseFreeGames}");
