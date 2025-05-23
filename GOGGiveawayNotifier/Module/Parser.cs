@@ -85,14 +85,13 @@ namespace GOGGiveawayNotifier.Module {
 						Name = name, Url = url
 					};
 
-					if (!oldRecords.Any(record => record.Name == newFreeGame.Name) ||
-						!oldRecords.Any(record => record.Url == newFreeGame.Url) ||
+					if (!oldRecords.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url) ||
 						prevNotifyList.Any(record => record.Name == newFreeGame.Name)) {
 						_logger.LogInformation($"Found new free game: {newFreeGame.Name}");
 						notifyList.Add(newFreeGame);
 					} else _logger.LogDebug($"{newFreeGame.Name} is found in previous record");
 
-					if(!prevResultList.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url))
+					if(!resultList.Any(record => record.Name == newFreeGame.Name || record.Url == newFreeGame.Url))
 						resultList.Add(newFreeGame);
 				}
 
