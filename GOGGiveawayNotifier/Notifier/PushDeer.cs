@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Web;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using HtmlAgilityPack;
 using GOGGiveawayNotifier.Model;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace GOGGiveawayNotifier.Notifier {
 	internal class PushDeer: INotifiable {
@@ -21,18 +20,20 @@ namespace GOGGiveawayNotifier.Notifier {
 
 		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
 			try {
-				var webGet = new HtmlWeb();
+				var client = new HttpClient();
 
 				foreach (var game in games) {
-					_logger.LogDebug($"{debugSendMessage} : {game.Name}");
-					await webGet.LoadFromWebAsync(
-						 new StringBuilder()
-						 .AppendFormat(NotifyFormatStrings.pushDeerUrlFormat,
-									config.PushDeerToken,
-									HttpUtility.UrlEncode(new StringBuilder().AppendFormat(NotifyFormatStrings.pushDeerFormat, game.Name, game.Url).ToString()))
-						 .Append(HttpUtility.UrlEncode(NotifyFormatStrings.projectLink))
-						 .ToString()
-					 );
+					_logger.LogDebug($"{debugSendMessage}: {game.Title}");
+
+					string text = string.Empty;
+
+					if (game.Type == ParseStrings.typeGiveaway)
+						text = $"{string.Format(NotifyFormatStrings.pushDeerFormat[0], game.Title, game.EndDate, game.Url)}{NotifyFormatStrings.projectLink}";
+					else text = $"{string.Format(NotifyFormatStrings.pushDeerFormat[1], game.Title, game.Url)}{NotifyFormatStrings.projectLink}";
+
+					var resp = await client.GetAsync(string.Format(NotifyFormatStrings.pushDeerUrlFormat, config.PushDeerToken, HttpUtility.UrlEncode(text)));
+
+					_logger.LogDebug(await resp.Content.ReadAsStringAsync());
 				}
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
