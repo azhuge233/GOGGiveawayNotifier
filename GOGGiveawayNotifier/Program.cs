@@ -24,8 +24,8 @@ namespace GOGGiveawayNotifier {
 
 					services.GetRequiredService<ConfigValidator>().CheckValid(config);
 
-					var gogHomeHtmlDoc = scraper.GetGOGHomeSource();
-					var gogProductPageHtmlDoc = scraper.GetGOGProductSource();
+					var gogHomeSource = await scraper.GetGOGHomeSource();
+					var gogProductPageSource = await scraper.GetGOGProductSource();
 
 					//var gogHomeHtmlDoc = new HtmlAgilityPack.HtmlDocument();
 					//gogHomeHtmlDoc.LoadHtml(System.IO.File.ReadAllText("TestHtml\\test2.html"));
@@ -34,8 +34,8 @@ namespace GOGGiveawayNotifier {
 
 					var oldRecords = jsonOp.LoadData();
 
-					var tuple1 = parser.ParseGiveaway(gogHomeHtmlDoc, oldRecords);
-					var tuple2 = parser.ParseFreeGames(gogProductPageHtmlDoc, oldRecords, tuple1.Item1, tuple1.Item2);
+					var tuple1 = parser.ParseGiveaway(gogHomeSource, oldRecords);
+					var tuple2 = parser.ParseFreeGames(gogProductPageSource, oldRecords, tuple1.Item1, tuple1.Item2);
 
 					await services.GetRequiredService<NotifyOP>().Notify(config, tuple2.Item2);
 

@@ -1,5 +1,6 @@
 ﻿using System;
-using HtmlAgilityPack;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace GOGGiveawayNotifier.Module {
@@ -7,6 +8,8 @@ namespace GOGGiveawayNotifier.Module {
 		private readonly ILogger<Scraper> _logger;
 		private readonly string GogHomeUrl = "https://www.gog.com/";
 		private readonly string GogProductUrl = "https://www.gog.com/games?priceRange=0,0&discounted=true";
+
+		private readonly HttpClient Client = new();
 
 		#region debug strings
 		private readonly string debugGetSource = "Getting page source: {0}";
@@ -16,26 +19,30 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public HtmlDocument GetGOGHomeSource() {
+		public async Task<string> GetGOGHomeSource() {
 			try {
 				_logger.LogDebug(debugGetSource, GogHomeUrl);
-				var webGet = new HtmlWeb();
-				var htmlDoc = webGet.Load(GogHomeUrl);
+
+				var resp = await Client.GetAsync(GogHomeUrl);
+				var result = await resp.Content.ReadAsStringAsync();
+
 				_logger.LogDebug($"Done: {debugGetSource}", GogHomeUrl);
-				return htmlDoc;
+				return result;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugGetSource}", GogHomeUrl);
 				throw;
 			}
 		}
 
-		public HtmlDocument GetGOGProductSource() {
+		public async Task<string> GetGOGProductSource() {
 			try {
 				_logger.LogDebug(debugGetSource, GogProductUrl);
-				var webGet = new HtmlWeb();
-				var htmlDoc = webGet.Load(GogProductUrl);
+
+				var resp = await Client.GetAsync(GogProductUrl);
+				var result = await resp.Content.ReadAsStringAsync();
+
 				_logger.LogDebug($"Done: {debugGetSource}", GogProductUrl);
-				return htmlDoc;
+				return result;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugGetSource}", GogProductUrl);
 				throw;

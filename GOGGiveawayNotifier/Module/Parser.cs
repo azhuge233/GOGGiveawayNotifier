@@ -19,9 +19,12 @@ namespace GOGGiveawayNotifier.Module {
 			_logger = logger;
 		}
 
-		public Tuple<List<GiveawayRecord>, List<GiveawayRecord>> ParseGiveaway(HtmlDocument htmlDoc, List<GiveawayRecord> oldRecords) {
+		public Tuple<List<GiveawayRecord>, List<GiveawayRecord>> ParseGiveaway(string source, List<GiveawayRecord> oldRecords) {
 			try {
 				_logger.LogDebug(debugParseGiveaway);
+
+				var htmlDoc = new HtmlDocument();
+				htmlDoc.LoadHtml(source);
 
 				var giveawayDiv = htmlDoc.DocumentNode.SelectSingleNode(ParseStrings.giveawayDivXPath);
 				var resultList = new List<GiveawayRecord>();
@@ -69,9 +72,12 @@ namespace GOGGiveawayNotifier.Module {
 			}
 		}
 
-		public Tuple<List<GiveawayRecord>, List<GiveawayRecord>> ParseFreeGames(HtmlDocument htmlDoc, List<GiveawayRecord> oldRecords, List<GiveawayRecord> prevResultList, List<GiveawayRecord> prevNotifyList) {
+		public Tuple<List<GiveawayRecord>, List<GiveawayRecord>> ParseFreeGames(string source, List<GiveawayRecord> oldRecords, List<GiveawayRecord> prevResultList, List<GiveawayRecord> prevNotifyList) {
 			try {
 				_logger.LogDebug(debugParseFreeGames);
+
+				var htmlDoc = new HtmlDocument();
+				htmlDoc.LoadHtml(source);
 
 				var tiles = htmlDoc.DocumentNode.SelectNodes(ParseStrings.productTileXPath);
 				var resultList = new List<GiveawayRecord>(prevResultList);
