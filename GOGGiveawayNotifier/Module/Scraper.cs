@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -49,20 +50,20 @@ namespace GOGGiveawayNotifier.Module {
 		}
 
 		public async Task<string> GetGOGGiveawaySource(string sectionID) {
-			try {
-				_logger.LogDebug(debugGetSource, GogGiveawaySectionUrl);
+			string url = string.Format(GogGiveawaySectionUrl, sectionID);
 
-				string url = string.Format(GogGiveawaySectionUrl, sectionID);
+			try {
+				_logger.LogDebug(debugGetSource, url);
 
 				var resp = await Client.GetAsync(url);
 				var result = await resp.Content.ReadAsStringAsync();
 
 				// await File.WriteAllTextAsync($"{AppDomain.CurrentDomain.BaseDirectory}Test{Path.DirectorySeparatorChar}giveaway.json", result);
 
-				_logger.LogDebug($"Done: {debugGetSource}", GogGiveawaySectionUrl);
+				_logger.LogDebug($"Done: {debugGetSource}", url);
 				return result;
 			} catch (Exception) {
-				_logger.LogError($"Error: {debugGetSource}", GogGiveawaySectionUrl);
+				_logger.LogError($"Error: {debugGetSource}", url);
 				throw;
 			}
 		}
