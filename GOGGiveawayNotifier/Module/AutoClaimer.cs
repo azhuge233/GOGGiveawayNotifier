@@ -32,7 +32,7 @@ namespace GOGGiveawayNotifier.Module {
 				return string.Empty;
 			}
 
-			if (game == null || string.IsNullOrEmpty(game.Name)) {
+			if (game == null || string.IsNullOrEmpty(game.ID)) {
 				_logger.LogInformation(infoNoNewGiveaway);
 				return string.Empty;
 			}
