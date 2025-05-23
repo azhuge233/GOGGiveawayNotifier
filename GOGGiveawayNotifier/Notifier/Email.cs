@@ -29,13 +29,15 @@ namespace GOGGiveawayNotifier.Notifier {
 				message.From.Add(new MailboxAddress("GOG-FreeGames", fromAddress));
 				message.To.Add(new MailboxAddress("Receiver", toAddress));
 
+				message.Subject = NotifyFormatStrings.emailTitleFormat;
+
 				var sb = new StringBuilder();
 
-				message.Subject = sb.Append(NotifyFormatStrings.emailTitleFormat).ToString();
-				
-				sb.Clear();
-
-				games.ForEach(game => sb.AppendFormat(NotifyFormatStrings.emailBodyFormat, game.Name, game.Url));
+				foreach (var game in games) {
+					if (game.Type == ParseStrings.typeGiveaway)
+						sb.AppendFormat(NotifyFormatStrings.emailBodyFormat[0], game.Title, game.EndDate, game.Url);
+					else sb.AppendFormat(NotifyFormatStrings.emailBodyFormat[1], game.Title, game.Url);
+				}
 
 				sb.Append(NotifyFormatStrings.projectLinkHTML);
 
