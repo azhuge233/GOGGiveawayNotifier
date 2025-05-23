@@ -24,11 +24,14 @@ namespace GOGGiveawayNotifier.Notifier {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var url = new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkUrlFormat, config.DingTalkBotToken).ToString();
+				var url = string.Format(NotifyFormatStrings.dingTalkUrlFormat, config.DingTalkBotToken);
 				
 				foreach(var game in games) {
 					var content = new DingTalkPostContent();
-					content.Text.Content_ = $"{new StringBuilder().AppendFormat(NotifyFormatStrings.dingTalkMessageFormat, game.Name, game.Url)}{NotifyFormatStrings.projectLink}";
+
+					if(game.Type == ParseStrings.typeGiveaway)
+						content.Text.Content_ = $"{string.Format(NotifyFormatStrings.dingTalkMessageFormat[0], game.Title, game.EndDate, game.Url)}{NotifyFormatStrings.projectLink}";
+					else content.Text.Content_ = $"{string.Format(NotifyFormatStrings.dingTalkMessageFormat[1], game.Title, game.Url)}{NotifyFormatStrings.projectLink}";
 
 					var data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
 					var resp = await new HttpClient().PostAsync(url, data);
