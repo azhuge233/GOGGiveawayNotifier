@@ -2,10 +2,10 @@
 using System.Text;
 using System.Web;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace GOGGiveawayNotifier.Notifier {
 	class PushPlus: INotifiable {
@@ -23,23 +23,26 @@ namespace GOGGiveawayNotifier.Notifier {
 			try {
 				_logger.LogDebug(debugSendMessage);
 
-				var url = new StringBuilder().AppendFormat(NotifyFormatStrings.pushPlusUrlFormat, config.PushPlusToken, HttpUtility.UrlEncode(NotifyFormatStrings.pushPlusTitleFormat));
+				var url = string.Format(NotifyFormatStrings.pushPlusUrlFormat, config.PushPlusToken, HttpUtility.UrlEncode(NotifyFormatStrings.pushPlusTitleFormat));
 
 				var sb = new StringBuilder();
 				foreach (var game in games) {
-					sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat, game.Name, game.Url);
+					if(game.Type == ParseStrings.typeGiveaway)
+						sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat[0], game.Title, game.EndDate, game.Url);
+					else sb.AppendFormat(NotifyFormatStrings.pushPlusBodyFormat[1], game.Title, game.Url);
 				}
 
 				var message = HttpUtility.UrlEncode(sb.ToString());
 
 				sb.Clear();
-				var resp = await new HtmlWeb().LoadFromWebAsync(
+				var client = new HttpClient();
+				var resp = await client.GetAsync(
 					sb.Append(url)
 						.Append(message)
 						.Append(NotifyFormatStrings.projectLinkHTML)
 						.ToString()
 				);
-				_logger.LogDebug(resp.Text);
+				_logger.LogDebug(await resp.Content.ReadAsStringAsync());
 
 				_logger.LogDebug($"Done: {debugSendMessage}");
 			} catch (Exception) {
