@@ -1,13 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Collections.Generic;
-using HtmlAgilityPack;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model;
+﻿using GOGGiveawayNotifier.Model;
 using GOGGiveawayNotifier.Model.GOG;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
@@ -42,6 +40,8 @@ namespace GOGGiveawayNotifier.Module {
 					return new (resultList, notifyList);
 				}
 
+				_logger.LogDebug($"Found giveaway section ID: {giveawaySection.SectionID}");
+
 				var giveawayData = await services.GetRequiredService<Scraper>().GetGOGGiveawaySource(giveawaySection.SectionID);
 
 				var giveawayJsonData = JsonConvert.DeserializeObject<Giveaway>(giveawayData);
@@ -52,7 +52,7 @@ namespace GOGGiveawayNotifier.Module {
 					Url = ParseStrings.GiveawayUrl,
 					Title = giveawayJsonData.Properties.Product.Title,
 					Slug = giveawayJsonData.Properties.Product.Slug,
-					EndDate = giveawayJsonData.Properties.EndDate.AddHours(5),
+					EndDate = giveawayJsonData.Properties.EndDate,
 					ProductType = giveawayJsonData.Properties.Product.ProductType,
 					ProductState = giveawayJsonData.Properties.Product.ProductState,
 				};
@@ -83,13 +83,15 @@ namespace GOGGiveawayNotifier.Module {
 
 				var catalogsJsonData = JsonConvert.DeserializeObject<Catalogs>(source);
 
-				var products = catalogsJsonData.Products;
+				Console.WriteLine($"{catalogsJsonData.ProductCount} {catalogsJsonData.Products.Count}");
 
-				if (products == null || products.Count == 0) {
+				if (catalogsJsonData.ProductCount == 0 || catalogsJsonData.Products.Count == 0) {
 					_logger.LogDebug("No free games detected");
 					_logger.LogDebug($"Done: {debugParseFreeGames}");
 					return new (resultList, notifyList);
-				} else _logger.LogDebug($"Found free games count: {products.Count}");
+				} else _logger.LogDebug($"Found free games count: {catalogsJsonData.ProductCount}");
+
+				var products = catalogsJsonData.Products;
 
 				foreach (var product in products) {
 					var newFreeGame = new GiveawayRecord() {
