@@ -41,6 +41,7 @@ namespace GOGGiveawayNotifier.Module {
 
 			try {
 				var httpClient = new HttpClient();
+
 				var request = new HttpRequestMessage() {
 					Method = HttpMethod.Get,
 					RequestUri = new Uri(AutoClaimerStrings.Url),
@@ -49,14 +50,14 @@ namespace GOGGiveawayNotifier.Module {
 						{ AutoClaimerStrings.CookieKey, config.Cookie }
 					}
 				};
-				var resp = await httpClient.SendAsync(request);
-				var stream = new StreamReader(await resp.Content.ReadAsStreamAsync());
-				var res = await stream.ReadToEndAsync();
 
-				_logger.LogInformation($"Claim result: {res}");
+				var resp = await httpClient.SendAsync(request);
+				var result = await resp.Content.ReadAsStringAsync();
+
+				_logger.LogInformation($"Claim result: {result}");
 				_logger.LogDebug($"Done: {debugAutoClaim}");
 
-				return res;
+				return result;
 			} catch (Exception) {
 				_logger.LogError($"Error: {debugAutoClaim}");
 				throw;
