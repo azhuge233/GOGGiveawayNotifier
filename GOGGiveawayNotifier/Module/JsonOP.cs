@@ -10,7 +10,6 @@ namespace GOGGiveawayNotifier.Module {
 		private readonly ILogger<JsonOP> _logger = logger;
 
 		#region path strings
-		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}Config{Path.DirectorySeparatorChar}config.json";
 		private readonly string recordPath = $"{AppDomain.CurrentDomain.BaseDirectory}Record{Path.DirectorySeparatorChar}record.json";
 		#endregion
 
