@@ -1,26 +1,24 @@
-﻿using System;
+﻿using GOGGiveawayNotifier.Model;
+using GOGGiveawayNotifier.Model.PostContent;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model.PostContent;
-using GOGGiveawayNotifier.Model;
-using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class DingTalk: INotifiable {
-		private readonly ILogger<DingTalk> _logger;
+	class DingTalk(ILogger<DingTalk> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<DingTalk> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notifications to DingTalk";
 		#endregion
 
-		public DingTalk(ILogger<DingTalk> logger) {
-			_logger = logger;
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
+		public async Task SendMessage(List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 

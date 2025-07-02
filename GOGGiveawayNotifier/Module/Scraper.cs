@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
-	class Scraper: IDisposable {
-		private readonly ILogger<Scraper> _logger;
+	class Scraper(ILogger<Scraper> logger) : IDisposable {
+		private readonly ILogger<Scraper> _logger = logger;
 
 		#region debug strings
 		private readonly string debugGetSource = "Getting page source: {0}";
@@ -24,13 +23,6 @@ namespace GOGGiveawayNotifier.Module {
 		#endregion
 
 		private readonly HttpClient Client = new();
-
-		public Scraper(ILogger<Scraper> logger) {
-			_logger = logger;
-
-			Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
-			Client.DefaultRequestHeaders.Add("Cache-Control", CacheControl);
-		}
 
 		public async Task<string> GetGOGHomeSource() {
 			try {

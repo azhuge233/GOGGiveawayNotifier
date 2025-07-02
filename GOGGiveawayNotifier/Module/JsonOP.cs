@@ -6,17 +6,13 @@ using GOGGiveawayNotifier.Model;
 using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Module {
-	public class JsonOP : IDisposable {
-		private readonly ILogger<JsonOP> _logger;
+	public class JsonOP(ILogger<JsonOP> logger) : IDisposable {
+		private readonly ILogger<JsonOP> _logger = logger;
 
 		#region path strings
 		private readonly string configPath = $"{AppDomain.CurrentDomain.BaseDirectory}Config{Path.DirectorySeparatorChar}config.json";
 		private readonly string recordPath = $"{AppDomain.CurrentDomain.BaseDirectory}Record{Path.DirectorySeparatorChar}record.json";
 		#endregion
-
-		public JsonOP(ILogger<JsonOP> logger) {
-			_logger = logger;
-		}
 
 		public void WriteData(List<GiveawayRecord> data) {
 			try {
@@ -41,18 +37,6 @@ namespace GOGGiveawayNotifier.Module {
 				return content;
 			} catch (Exception) {
 				_logger.LogError("Loading previous records failed.");
-				throw;
-			}
-		}
-
-		public Config LoadConfig() {
-			try {
-				_logger.LogDebug("Loading config");
-				var content = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configPath));
-				_logger.LogDebug("Done");
-				return content;
-			} catch (Exception) {
-				_logger.LogError("Loading config failed.");
 				throw;
 			}
 		}

@@ -1,20 +1,18 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
+using Microsoft.Extensions.Options;
 
 namespace GOGGiveawayNotifier.Module {
-	class ConfigValidator : IDisposable {
-		private readonly ILogger<ConfigValidator> _logger;
+	class ConfigValidator(ILogger<ConfigValidator> logger, IOptions<Config> config) : IDisposable {
+		private readonly ILogger<ConfigValidator> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugCheckValid = "Check config file validation";
 		#endregion
 
-		public ConfigValidator(ILogger<ConfigValidator> logger) {
-			_logger = logger;
-		}
-
-		public void CheckValid(Config config) {
+		public void CheckValid() {
 			try {
 				_logger.LogDebug(debugCheckValid);
 

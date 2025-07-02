@@ -1,25 +1,23 @@
-﻿using System;
-using System.Text;
-using System.Web;
-using System.Threading.Tasks;
+﻿using GOGGiveawayNotifier.Model;
 using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class PushPlus: INotifiable {
-		private readonly ILogger<PushPlus> _logger;
+	class PushPlus(ILogger<PushPlus> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<PushPlus> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to PushPlus";
 		#endregion
 
-		public PushPlus(ILogger<PushPlus> logger) {
-			_logger = logger;
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
+		public async Task SendMessage(List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 

@@ -1,24 +1,22 @@
-﻿using System;
-using System.Web;
-using System.Threading.Tasks;
+﻿using GOGGiveawayNotifier.Model;
 using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class Barker : INotifiable {
-		private readonly ILogger<Barker> _logger;
+	class Barker(ILogger<Barker> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<Barker> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Bark";
 		#endregion
 
-		public Barker(ILogger<Barker> logger) {
-			_logger = logger;
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
+		public async Task SendMessage(List<GiveawayRecord> games) {
 			try {
 				string url = string.Format(NotifyFormatStrings.barkUrlWithTitleFormat, config.BarkAddress, config.BarkToken);
 				string projectLink = HttpUtility.UrlEncode(NotifyFormatStrings.projectLink);

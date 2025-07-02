@@ -1,17 +1,19 @@
-﻿using GOGGiveawayNotifier.Model.WebSocketContent;
-using GOGGiveawayNotifier.Model;
+﻿using GOGGiveawayNotifier.Model;
+using GOGGiveawayNotifier.Model.WebSocketContent;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using System;
 using Websocket.Client;
-using System.Linq;
 
 namespace GOGGiveawayNotifier.Notifier {
-	internal class QQWebSocket : INotifiable {
-		private readonly ILogger<QQWebSocket> _logger;
+	internal class QQWebSocket(ILogger<QQWebSocket> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<QQWebSocket> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notifications to QQ WebSocket";
@@ -20,8 +22,30 @@ namespace GOGGiveawayNotifier.Notifier {
 		private readonly string debugWSDisconnected = "Disconnected: {0}";
 		#endregion
 
-		public QQWebSocket(ILogger<QQWebSocket> logger) {
-			_logger = logger;
+		public async Task SendMessage(List<GiveawayRecord> games) {
+			try {
+				_logger.LogDebug(debugSendMessage);
+
+				var packets = GetSendPacket(config, games);
+
+				using var client = GetWSClient(config);
+
+				await client.Start();
+
+				foreach (var packet in packets) {
+					await client.SendInstant(JsonConvert.SerializeObject(packet));
+					await Task.Delay(600);
+				}
+
+				await client.Stop(WebSocketCloseStatus.NormalClosure, string.Empty);
+
+				_logger.LogDebug($"Done: {debugSendMessage}");
+			} catch (Exception) {
+				_logger.LogDebug($"Error: {debugSendMessage}");
+				throw;
+			} finally {
+				Dispose();
+			}
 		}
 
 		private WebsocketClient GetWSClient(NotifyConfig config) {
@@ -53,32 +77,6 @@ namespace GOGGiveawayNotifier.Notifier {
 					}
 				};
 			}).ToList();
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
-			try {
-				_logger.LogDebug(debugSendMessage);
-
-				var packets = GetSendPacket(config, games);
-
-				using var client = GetWSClient(config);
-
-				await client.Start();
-
-				foreach (var packet in packets) {
-					await client.SendInstant(JsonConvert.SerializeObject(packet));
-					await Task.Delay(600);
-				}
-
-				await client.Stop(WebSocketCloseStatus.NormalClosure, string.Empty);
-
-				_logger.LogDebug($"Done: {debugSendMessage}");
-			} catch (Exception) {
-				_logger.LogDebug($"Error: {debugSendMessage}");
-				throw;
-			} finally {
-				Dispose();
-			}
 		}
 
 		public void Dispose() {

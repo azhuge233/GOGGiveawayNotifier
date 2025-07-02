@@ -1,26 +1,24 @@
-﻿using GOGGiveawayNotifier.Model.PostContent;
-using GOGGiveawayNotifier.Model;
+﻿using GOGGiveawayNotifier.Model;
+using GOGGiveawayNotifier.Model.PostContent;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace GOGGiveawayNotifier.Notifier {
-	public class Discord : INotifiable {
-		private readonly ILogger<Discord> _logger;
+	public class Discord(ILogger<Discord> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<Discord> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Send notification to Discord";
 		#endregion
 
-		public Discord(ILogger<Discord> logger) {
-			_logger = logger;
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
+		public async Task SendMessage(List<GiveawayRecord> games) {
 			try {
 				_logger.LogDebug(debugSendMessage);
 

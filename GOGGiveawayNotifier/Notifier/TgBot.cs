@@ -1,25 +1,23 @@
-﻿using System;
+﻿using GOGGiveawayNotifier.Model;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using Microsoft.Extensions.Logging;
-using GOGGiveawayNotifier.Model;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace GOGGiveawayNotifier.Notifier {
-	class TgBot : INotifiable {
-		private readonly ILogger<TgBot> _logger;
+	class TgBot(ILogger<TgBot> logger, IOptions<Config> config) : INotifiable {
+		private readonly ILogger<TgBot> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugSendMessage = "Sending Message";
 		#endregion
 
-		public TgBot(ILogger<TgBot> logger) {
-			_logger = logger;
-		}
-
-		public async Task SendMessage(NotifyConfig config, List<GiveawayRecord> games) {
+		public async Task SendMessage(List<GiveawayRecord> games) {
 			var BotClient = new TelegramBotClient(token: config.TelegramToken);
 			try {
 				_logger.LogDebug(debugSendMessage);

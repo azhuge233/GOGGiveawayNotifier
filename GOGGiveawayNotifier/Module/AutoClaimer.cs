@@ -1,14 +1,15 @@
 ﻿using GOGGiveawayNotifier.Model;
 using GOGGiveawayNotifier.Model.String;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
-	class AutoClaimer : IDisposable {
-		private readonly ILogger<AutoClaimer> _logger;
+	class AutoClaimer(ILogger<AutoClaimer> logger, IOptions<Config> config) : IDisposable {
+		private readonly ILogger<AutoClaimer> _logger = logger;
+		private readonly Config config = config.Value;
 
 		#region debug strings
 		private readonly string debugAutoClaim = "Auto claim giveaway";
@@ -17,11 +18,7 @@ namespace GOGGiveawayNotifier.Module {
 		private readonly string infoNoNewGiveaway = "No (new) giveaway detected, autoclaim abort";
 		#endregion
 
-		public AutoClaimer(ILogger<AutoClaimer> logger) {
-			_logger = logger;
-		}
-
-		public async Task<string> Claim(Config config, GiveawayRecord game) {
+		public async Task<string> Claim(GiveawayRecord game) {
 			if (!config.EnableAutoClaim) {
 				_logger.LogInformation(infoACDiabled);
 				return string.Empty;

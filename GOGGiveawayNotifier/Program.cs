@@ -14,15 +14,14 @@ namespace GOGGiveawayNotifier {
 			try {
 				logger.Info("- Start Job -");
 
-				var services = DI.BuildDiAll();
+				var services = DI.BuildAll();
 
 				using (services as IDisposable) {
 					var jsonOp = services.GetRequiredService<JsonOP>();
-					var config = jsonOp.LoadConfig();
 					var scraper = services.GetRequiredService<Scraper>();
 					var parser = services.GetRequiredService<Parser>();
 
-					services.GetRequiredService<ConfigValidator>().CheckValid(config);
+					services.GetRequiredService<ConfigValidator>().CheckValid();
 
 					var gogHomeData = await scraper.GetGOGHomeSource();
 					var gogCatalogData = await scraper.GetGOGCatalogSource();
@@ -37,11 +36,11 @@ namespace GOGGiveawayNotifier {
 					var tuple1 = await parser.ParseGiveaway(gogHomeData, oldRecords);
 					var tuple2 = parser.ParseFreeGames(gogCatalogData, oldRecords, tuple1.Item1, tuple1.Item2);
 
-					await services.GetRequiredService<NotifyOP>().Notify(config, tuple2.Item2);
+					await services.GetRequiredService<NotifyOP>().Notify(tuple2.Item2);
 
 					jsonOp.WriteData(tuple2.Item1);
 
-					var claimResult = await services.GetRequiredService<AutoClaimer>().Claim(config, tuple2.Item2.FirstOrDefault(game => game.Url == ParseStrings.GiveawayUrl));
+					var claimResult = await services.GetRequiredService<AutoClaimer>().Claim(tuple2.Item2.FirstOrDefault(game => game.Url == ParseStrings.GiveawayUrl));
 				}
 
 				logger.Info("- End Job -\n\n");

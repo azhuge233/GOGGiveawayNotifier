@@ -1,6 +1,5 @@
 ﻿using GOGGiveawayNotifier.Model;
 using GOGGiveawayNotifier.Model.GOG;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -9,19 +8,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
-	class Parser : IDisposable {
-		private readonly ILogger<Parser> _logger;
-
-		private readonly IServiceProvider services = DI.BuildDiScraperOnly();
+	class Parser(ILogger<Parser> logger, Scraper scraper) : IDisposable {
+		private readonly ILogger<Parser> _logger = logger;
 
 		#region debug strings
 		private readonly string debugParseGiveaway = "Parsing giveaway";
 		private readonly string debugParseFreeGames = "Parsing free games";
 		#endregion
-
-		public Parser(ILogger<Parser> logger) {
-			_logger = logger;
-		}
 
 		public async Task<Tuple<List<GiveawayRecord>, List<GiveawayRecord>>> ParseGiveaway(string data, List<GiveawayRecord> oldRecords) {
 			try {
@@ -42,7 +35,7 @@ namespace GOGGiveawayNotifier.Module {
 
 				_logger.LogDebug($"Found giveaway section ID: {giveawaySection.SectionID}");
 
-				var giveawayData = await services.GetRequiredService<Scraper>().GetGOGGiveawaySource(giveawaySection.SectionID);
+				var giveawayData = await scraper.GetGOGGiveawaySource(giveawaySection.SectionID);
 
 				var giveawayJsonData = JsonConvert.DeserializeObject<Giveaway>(giveawayData);
 
@@ -83,7 +76,7 @@ namespace GOGGiveawayNotifier.Module {
 
 				var catalogsJsonData = JsonConvert.DeserializeObject<Catalogs>(source);
 
-				Console.WriteLine($"{catalogsJsonData.ProductCount} {catalogsJsonData.Products.Count}");
+				// Console.WriteLine($"{catalogsJsonData.ProductCount} {catalogsJsonData.Products.Count}");
 
 				if (catalogsJsonData.ProductCount == 0 || catalogsJsonData.Products.Count == 0) {
 					_logger.LogDebug("No free games detected");
