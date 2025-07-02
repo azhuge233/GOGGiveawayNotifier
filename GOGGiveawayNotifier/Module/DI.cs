@@ -1,20 +1,22 @@
 ﻿using System;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
 using GOGGiveawayNotifier.Notifier;
 using GOGGiveawayNotifier.Model;
+using System.IO;
 
 namespace GOGGiveawayNotifier.Module {
     public static class DI {
-        private static readonly IConfigurationRoot logConfig = new ConfigurationBuilder()
-           .SetBasePath(Directory.GetCurrentDirectory())
+		private static readonly string BasePath = AppDomain.CurrentDomain.BaseDirectory;
+
+		private static readonly IConfigurationRoot logConfig = new ConfigurationBuilder()
+           .SetBasePath(BasePath)
            .Build();
 		private static readonly IConfigurationRoot configuration = new ConfigurationBuilder()
-		   .SetBasePath(Directory.GetCurrentDirectory())
-           .AddJsonFile("Config/config.json", optional: false, reloadOnChange: true)
+		   .SetBasePath(BasePath)
+           .AddJsonFile($"Config{Path.DirectorySeparatorChar}config.json", optional: false, reloadOnChange: true)
 		   .Build();
 
 		public static IServiceProvider BuildAll() {
