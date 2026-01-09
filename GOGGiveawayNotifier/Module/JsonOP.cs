@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using GOGGiveawayNotifier.Model;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace GOGGiveawayNotifier.Module {
 	public class JsonOP(ILogger<JsonOP> logger) : IDisposable {
@@ -17,7 +17,7 @@ namespace GOGGiveawayNotifier.Module {
 			try {
 				if (data != null && data.Count > 0) {
 					_logger.LogDebug("Writing records!");
-					string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+					string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
 					File.WriteAllText(recordPath, string.Empty);
 					File.WriteAllText(recordPath, json);
 					_logger.LogDebug("Done");
@@ -31,7 +31,7 @@ namespace GOGGiveawayNotifier.Module {
 		public List<GiveawayRecord> LoadData() {
 			try {
 				_logger.LogDebug("Loading previous records");
-				var content = JsonConvert.DeserializeObject<List<GiveawayRecord>>(File.ReadAllText(recordPath));
+				var content = JsonSerializer.Deserialize<List<GiveawayRecord>>(File.ReadAllText(recordPath));
 				_logger.LogDebug("Done");
 				return content;
 			} catch (Exception) {

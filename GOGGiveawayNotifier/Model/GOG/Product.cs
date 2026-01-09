@@ -1,18 +1,18 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.GOG {
 	public class Product {
-		[JsonProperty("id")]
+		[JsonPropertyName("id")]
 		public string ID { get; set; }
-		[JsonProperty("title")]
+		[JsonPropertyName("title")]
 		public string Title { get; set; }
-		[JsonProperty("slug")]
+		[JsonPropertyName("slug")]
 		public string Slug { get; set; }
-		[JsonProperty("productType")]
+		[JsonPropertyName("productType")]
 		public string ProductType { get; set; }
-		[JsonProperty("productState")]
+		[JsonPropertyName("productState")]
 		public string ProductState { get; set; }
-		[JsonProperty("storeLink")]
+		[JsonPropertyName("storeLink")]
 		public string StoreLink { get; set; }
 	}
 }

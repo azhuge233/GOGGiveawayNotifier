@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Models.PostContent {
 	public class MeowPostContent {
-		[JsonProperty("title")]
+		[JsonPropertyName("title")]
 		public string Title { get; set; }
-		[JsonProperty("msg")]
+		[JsonPropertyName("msg")]
 		public string Message { get; set; }
-		[JsonProperty("url")]
+		[JsonPropertyName("url")]
 		public string Url { get; set; }
 	}
 }

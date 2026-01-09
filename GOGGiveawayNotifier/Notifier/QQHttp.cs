@@ -2,11 +2,11 @@
 using GOGGiveawayNotifier.Model.PostContent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Notifier {
@@ -40,7 +40,7 @@ namespace GOGGiveawayNotifier.Notifier {
 						content.Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat[0], game.Title, game.EndDate, game.Url)}{NotifyFormatStrings.projectLink}";
 					else content.Message = $"{string.Format(NotifyFormatStrings.qqMessageFormat[1], game.Title, game.Url)}{NotifyFormatStrings.projectLink}";
 
-					data = new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json");
+					data = new StringContent(JsonSerializer.Serialize(content), Encoding.UTF8, "application/json");
 					resp = await client.PostAsync(url, data);
 
 					_logger.LogInformation(await resp.Content.ReadAsStringAsync());

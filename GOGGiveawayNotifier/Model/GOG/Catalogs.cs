@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.GOG {
 	public class Catalogs {
-		[JsonProperty("productCount")]
+		[JsonPropertyName("productCount")]
 		public int ProductCount { get; set; }
-		[JsonProperty("products")]
+		[JsonPropertyName("products")]
 		public List<Product> Products { get; set; } = [];
 	}
 }

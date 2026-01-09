@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.GOG {
 	public class Giveaway {
-		[JsonProperty("properties")]
+		[JsonPropertyName("properties")]
 		public Properties Properties { get; set; }
 	}
 
 	public class Properties {
-		[JsonProperty("endDate")]
+		[JsonPropertyName("endDate")]
 		public DateTime EndDate { get; set; }
-		[JsonProperty("product")]
+		[JsonPropertyName("product")]
 		public Product Product { get; set; }
 	}
 }

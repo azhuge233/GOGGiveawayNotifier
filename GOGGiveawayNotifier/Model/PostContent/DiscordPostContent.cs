@@ -1,28 +1,28 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.PostContent {
 	public class Footer {
-		[JsonProperty("text")]
+		[JsonPropertyName("text")]
 		public string Text { get; set; }
 
 	}
 	public class Embed {
-		[JsonProperty("title")]
+		[JsonPropertyName("title")]
 		public string Title { get; set; }
-		[JsonProperty("url")]
+		[JsonPropertyName("url")]
 		public string Url { get; set; }
-		[JsonProperty("description")]
+		[JsonPropertyName("description")]
 		public string Description { get; set; }
-		[JsonProperty("color")]
+		[JsonPropertyName("color")]
 		public int Color { get; set; } = 7478904;
-		[JsonProperty("footer")]
+		[JsonPropertyName("footer")]
 		public Footer Footer { get; set; }
 	}
 	public class DiscordPostContent {
-		[JsonProperty("content")]
+		[JsonPropertyName("content")]
 		public string Content { get; set; }
-		[JsonProperty("embeds")]
+		[JsonPropertyName("embeds")]
 		public List<Embed> Embeds { get; set; } = new List<Embed>();
 	}
 }

@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.GOG {
 	public class HomePageSections {
-		[JsonProperty("sections")]
+		[JsonPropertyName("sections")]
 		public List<Section> Sections { get; set; } = [];
 	}
 
 	public class Section {
-		[JsonProperty("sectionId")]
+		[JsonPropertyName("sectionId")]
 		public string SectionID { get; set; }
-		[JsonProperty("sectionType")]
+		[JsonPropertyName("sectionType")]
 		public string SectionType { get; set; }
 	}
 }

@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.PostContent {
 	public class QQHttpPostContent {
-		[JsonProperty("user_id")]
+		[JsonPropertyName("user_id")]
 		public string UserID { get; set; }
 
-		[JsonProperty("message")]
+		[JsonPropertyName("message")]
 		public string Message { get; set; }
 	}
 }

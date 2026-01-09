@@ -1,10 +1,10 @@
 ﻿using GOGGiveawayNotifier.Model;
 using GOGGiveawayNotifier.Model.GOG;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GOGGiveawayNotifier.Module {
@@ -23,7 +23,7 @@ namespace GOGGiveawayNotifier.Module {
 				var resultList = new List<GiveawayRecord>();
 				var notifyList = new List<GiveawayRecord>();
 
-				var sectionsJsonData = JsonConvert.DeserializeObject<HomePageSections>(data);
+				var sectionsJsonData = JsonSerializer.Deserialize<HomePageSections>(data);
 
 				var giveawaySection = sectionsJsonData.Sections.FirstOrDefault(section => section.SectionType == ParseStrings.giveawaySectionType, null);
 
@@ -37,7 +37,7 @@ namespace GOGGiveawayNotifier.Module {
 
 				var giveawayData = await scraper.GetGOGGiveawaySource(giveawaySection.SectionID);
 
-				var giveawayJsonData = JsonConvert.DeserializeObject<Giveaway>(giveawayData);
+				var giveawayJsonData = JsonSerializer.Deserialize<Giveaway>(giveawayData);
 
 				var newGiveaway = new GiveawayRecord {
 					ID = giveawayJsonData.Properties.Product.ID,
@@ -74,7 +74,7 @@ namespace GOGGiveawayNotifier.Module {
 				var resultList = new List<GiveawayRecord>(prevResultList);
 				var notifyList = new List<GiveawayRecord>(prevNotifyList);
 
-				var catalogsJsonData = JsonConvert.DeserializeObject<Catalogs>(source);
+				var catalogsJsonData = JsonSerializer.Deserialize<Catalogs>(source);
 
 				// Console.WriteLine($"{catalogsJsonData.ProductCount} {catalogsJsonData.Products.Count}");
 

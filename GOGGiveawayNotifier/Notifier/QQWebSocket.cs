@@ -2,11 +2,11 @@
 using GOGGiveawayNotifier.Model.WebSocketContent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Websocket.Client;
 
@@ -33,7 +33,7 @@ namespace GOGGiveawayNotifier.Notifier {
 				await client.Start();
 
 				foreach (var packet in packets) {
-					await client.SendInstant(JsonConvert.SerializeObject(packet));
+					await client.SendInstant(JsonSerializer.Serialize(packet));
 					await Task.Delay(600);
 				}
 

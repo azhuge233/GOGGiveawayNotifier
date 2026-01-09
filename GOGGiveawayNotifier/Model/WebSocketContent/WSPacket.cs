@@ -1,19 +1,19 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace GOGGiveawayNotifier.Model.WebSocketContent {
 	public class WSPacket {
-		[JsonProperty("action")]
+		[JsonPropertyName("action")]
 		public string Action { get; set; }
 
-		[JsonProperty("params")]
+		[JsonPropertyName("params")]
 		public Param Params { get; set; }
 	}
 
 	public class Param {
-		[JsonProperty("user_id")]
+		[JsonPropertyName("user_id")]
 		public string UserID { get; set; }
 
-		[JsonProperty("message")]
+		[JsonPropertyName("message")]
 		public string Message { get; set; }
 	}
 }
