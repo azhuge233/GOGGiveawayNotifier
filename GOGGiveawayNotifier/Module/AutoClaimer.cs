@@ -16,6 +16,9 @@ namespace GOGGiveawayNotifier.Module {
 		private readonly string infoACDiabled = "Auto claim disabled, skipping";
 		private readonly string infoNoCookie = "No cookie configured, skipping";
 		private readonly string infoNoNewGiveaway = "No (new) giveaway detected, autoclaim abort";
+		private readonly string infoClaimSuccess = "Game claimed successfully!";
+		private readonly string infoAlreadyClaimed = "Game was already claimed!";
+		private readonly string warnClaimFailed = "Game claim may have failed, check the result!";
 		#endregion
 
 		public async Task<string> Claim(GiveawayRecord game) {
@@ -51,7 +54,12 @@ namespace GOGGiveawayNotifier.Module {
 				var resp = await httpClient.SendAsync(request);
 				var result = await resp.Content.ReadAsStringAsync();
 
-				_logger.LogInformation($"Claim result: {result}");
+				_logger.LogDebug($"Claim result: {result}");
+
+				if(result == "{}") _logger.LogInformation(infoClaimSuccess);
+				else if(result.ToLower().Contains("already claimed")) _logger.LogInformation(infoAlreadyClaimed);
+				else _logger.LogWarning(warnClaimFailed);
+
 				_logger.LogDebug($"Done: {debugAutoClaim}");
 
 				return result;
